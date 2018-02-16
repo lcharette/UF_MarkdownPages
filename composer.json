@@ -1,0 +1,30 @@
+{
+    "name": "lcharette/UF_MarkdownPages",
+    "type": "userfrosting-sprinkle",
+    "description": "Simple flat-file pages for UserFrosting 4",
+    "keywords": ["UserFrosting", "Flat-file", "Markdown"],
+    "homepage": "https://github.com/lcharette/UF_MarkdownPages",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name": "Louis Charette",
+            "homepage": "https://github.com/lcharette"
+        }
+    ],
+    "require": {
+        "pagerange/metaparsedown": "^1.0.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "UserFrosting\\Sprinkle\\MarkdownPages\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "UserFrosting\\Sprinkle\\MarkdownPages\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "installer-name": "MarkdownPages"
+    }
+}
