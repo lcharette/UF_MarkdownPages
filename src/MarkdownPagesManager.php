@@ -147,11 +147,71 @@ class MarkdownPagesManager
             //$page->url = $router->pathFor('markdownPages', ['path' => $page->slug]);
             $page->url = "/{$this->ci->config['MarkdownPages.route']}/{$page->slug}";
 
+            // To help with the tree generation, we'll add the parent slug here
+            $page->parent = $this->getParentSlug($page->slug);
+
             // Add page to the collection
             $pages->push($page);
         }
 
         return $pages;
+    }
+
+    /**
+     *    Function that return the complete page tree used to create a menu
+     *
+     *    @param  string $topLevel The top level slug (default '');
+     *    @return Collection
+     */
+    public function getTree($topLevel = '')
+    {
+        // Get all pages
+        $pages = $this->getPages();
+
+        // We start by top most pages (the one without parent) and go down from here
+        return $this->getPagesChildren($pages, $topLevel);
+    }
+
+    /**
+     *    Function that recursively find children for a given parent slug
+     *
+     *    @param  Collection $pages A collection of pages
+     *    @param  string $parentSlug The parent slug
+     *    @return Collection The tree of children for that given slug
+     */
+    protected function getPagesChildren($pages, $parentSlug)
+    {
+        // Regroups pages by parents
+        $parents = $pages->groupBy('parent');
+
+        // Get children for said parent. If none are found, we'll use an empty collection
+        $children = $parents->get($parentSlug, function() {
+            return collect([]);
+        });
+
+        // Loop all pages with said parent to recursively add them to the children's children
+        foreach ($pages->where('parent', $parentSlug) as $child_page) {
+            $child_page->children = $this->getPagesChildren($pages, $child_page->slug);
+        }
+
+        // Return the children, with the top level slug as a key
+        return $children->keyBy(function ($page) {
+            $parts = explode('/', $page->slug);
+            return array_pop($parts);
+        });
+    }
+
+    /**
+     *    Return the parent of a given page slug
+     *
+     *    @param  string $slug The item slug
+     *    @return string The item parent slug
+     */
+    protected function getParentSlug($slug)
+    {
+        $fragments = explode('/', $slug);
+        array_pop($fragments);
+        return implode('/', $fragments);
     }
 
     /**
@@ -191,11 +251,6 @@ class MarkdownPagesManager
 
         // Glue the fragments back together
         return implode('/', $dirFragments);
-    }
-
-    public function getTree()
-    {
-        //return array - nested list of pages. Needs metadata of each pages
     }
 
     /**

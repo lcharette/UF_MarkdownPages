@@ -126,6 +126,7 @@ class MarkdownPagesTest extends TestCase
             '02.Foo/03.Japan/docs.md',
             '02.Foo/04.Mexico/docs.md',
             '02.Foo/04.Mexico/01.Mexican/docs.md',
+            '02.Foo/04.Mexico/01.Mexican/01.Bar/docs.md',
             '02.Foo/04.Brazil/docs.md',
             '02.Foo/05.Italy/docs.md',
             '02.Foo/chapter.md'
@@ -155,7 +156,7 @@ class MarkdownPagesTest extends TestCase
 
         // Test the results of `getPages`
         $this->assertInstanceOf(Collection::class, $pages);
-        $this->assertCount(9, $pages);
+        $this->assertCount(10, $pages);
         $this->assertEquals([
             'Bar',
             'Foo/Canada',
@@ -163,6 +164,7 @@ class MarkdownPagesTest extends TestCase
             'Foo/Japan',
             'Foo/Mexico',
             'Foo/Mexico/Mexican',
+            'Foo/Mexico/Mexican/Bar',
             'Foo/Brazil',
             'Foo/Italy',
             'Foo'
@@ -173,6 +175,18 @@ class MarkdownPagesTest extends TestCase
         $this->assertInstanceOf(MarkdownPageInterface::class, $page);
         $this->assertEquals('02.Foo/05.Italy/docs.md', $page->relativePath);
         $this->assertEquals('Foo/Italy', $page->slug);
+
+        // We can now test the treeview
+        $tree = $manager->getTree();
+        $this->assertInstanceOf(Collection::class, $tree);
+        $this->assertCount(2, $tree);
+        $this->assertEquals('Foo/Mexico/Mexican/Bar', $tree['Foo']->children['Mexico']->children['Mexican']->children['Bar']->slug);
+
+        // And one with a top level slug
+        $tree = $manager->getTree('Foo/Mexico');
+        $this->assertInstanceOf(Collection::class, $tree);
+        $this->assertCount(1, $tree);
+        $this->assertEquals('Foo/Mexico/Mexican/Bar', $tree['Mexican']->children['Bar']->slug);        
     }
 
     /**
