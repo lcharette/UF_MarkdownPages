@@ -1,5 +1,5 @@
 {
-    "name": "lcharette/UF_MarkdownPages",
+    "name": "lcharette/uf_markdownpages",
     "type": "userfrosting-sprinkle",
     "description": "Simple flat-file pages for UserFrosting 4",
     "keywords": ["UserFrosting", "Flat-file", "Markdown"],
