@@ -43,5 +43,8 @@ This sprinkle comes supports automated testing. Before submitting a new Pull Req
 By [Louis Charette](https://github.com/lcharette). Copyright (c) 2018, free to use in personal and commercial software as per the MIT license.
 
 # TODO
+- Add better breadcrumbs
 - Add basic permissions to pages
 - Support multiple languages
+- Support for base homepage
+- Support for partial file (folder starting with an underscore, ie `_header`)

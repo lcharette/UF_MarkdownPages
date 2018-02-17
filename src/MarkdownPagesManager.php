@@ -140,7 +140,12 @@ class MarkdownPagesManager
             $page->slug = $this->pathToSlug($page->relativePath);
 
             // Add the url
+            /**
+            * TODO: Replace with the proper router `pathFor` method once UF issue #854 is resolve
+            * @see https://github.com/userfrosting/UserFrosting/issues/854
+            */
             //$page->url = $router->pathFor('markdownPages', ['path' => $page->slug]);
+            $page->url = "/{$this->ci->config['MarkdownPages.route']}/{$page->slug}";
 
             // Add page to the collection
             $pages->push($page);
