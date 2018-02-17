@@ -89,10 +89,12 @@ class MarkdownPagesManager
      */
     public function findPage($slug)
     {
+        // Get all pages
         $pages = $this->getPages();
 
+        // Find the page we want. Make sure we get a result,
+        // otherwise file is not found
         $page = $pages->where('slug', $slug)->first();
-
         if (!$page) {
             throw new FileNotFoundException;
         }
@@ -114,7 +116,7 @@ class MarkdownPagesManager
         $locator = $this->getLocator();
 
         /** @var \UserFrosting\Sprinkle\Core\Router $router */
-        $router = $this->ci->router;
+        $router = $this->getRouter();
 
         // Get all the files
         $files = $this->getFiles();
@@ -124,7 +126,6 @@ class MarkdownPagesManager
 
         // Loop through files to populate pages
         foreach ($files as $filePath) {
-
 
             // Get the full absolute path
             $path = $locator->findResource('extra://pages/' . $filePath);
@@ -138,6 +139,8 @@ class MarkdownPagesManager
             // Add the slug
             $page->slug = $this->pathToSlug($page->relativePath);
 
+            // Add the url
+            //$page->url = $router->pathFor('markdownPages', ['path' => $page->slug]);
 
             // Add page to the collection
             $pages->push($page);
@@ -153,6 +156,15 @@ class MarkdownPagesManager
     protected function getLocator()
     {
         return $this->ci->locator;
+    }
+
+    /**
+     *    Return the router service
+     *    @return \UserFrosting\Sprinkle\Core\Router
+     */
+    protected function getRouter()
+    {
+        return $this->ci->router;
     }
 
     /**

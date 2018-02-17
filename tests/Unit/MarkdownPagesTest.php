@@ -11,8 +11,10 @@ namespace UserFrosting\Tests\Unit;
 
 use Mockery as m;
 use InvalidArgumentException;
+use Illuminate\Support\Collection;
 use UserFrosting\Tests\TestCase;
 use UserFrosting\Sprinkle\MarkdownPages\MarkdownPage;
+use UserFrosting\Sprinkle\MarkdownPages\MarkdownPageInterface;
 use UserFrosting\Sprinkle\MarkdownPages\MarkdownPagesManager;
 use UserFrosting\Support\Exception\FileNotFoundException;
 
@@ -79,11 +81,11 @@ class MarkdownPagesTest extends TestCase
     }
 
     /**
-     *    Test the `getPages` method
+     *    Test the `getFiles` method
      */
-    public function testMarkdownPagesManager_getPages()
+    public function testMarkdownPagesManager_getFiles()
     {
-        $pages = $this->manager->getPages();
+        $pages = $this->manager->getFiles();
         $this->assertInternalType('array', $pages);
     }
 
@@ -102,6 +104,75 @@ class MarkdownPagesTest extends TestCase
         // When dealing with a non markdown file, an exception should occur
         $this->expectException(InvalidArgumentException::class);
         $page = $this->manager->getPage('test.txt');
+    }
+
+    /**
+     *    Test the `getPages` & `findPage` methods
+     */
+    public function testMarkdownPagesManager_getPages_findPage()
+    {
+        // To test this one we'll need a partially mocked manager so we can
+        // return a fake list of page to search in
+        $manager = $this->getMockBuilder(MarkdownPagesManager::class)
+                        ->setConstructorArgs([$this->ci])
+                        ->setMethods(['getPage', 'getFiles'])
+                        ->getMock();
+
+        // The fake list of file the manager will find
+        $fakeFileList = [
+            '01.Bar/docs.md',
+            '02.Foo/01.Canada/docs.md',
+            '02.Foo/02.France/docs.md',
+            '02.Foo/03.Japan/docs.md',
+            '02.Foo/04.Mexico/docs.md',
+            '02.Foo/04.Mexico/01.Mexican/docs.md',
+            '02.Foo/04.Brazil/docs.md',
+            '02.Foo/05.Italy/docs.md',
+            '02.Foo/chapter.md'
+        ];
+
+        // When asked for the files, the manager will return this fake list
+        $manager->expects($this->any())
+                ->method('getFiles')
+                ->willReturn($fakeFileList);
+
+        // The manager can't create the file, as the fake files won't be found.
+        // So we also create fake pages
+        $manager->expects($this->any())
+                ->method('getPage')
+                ->will($this->returnCallback(
+                    function($param) {
+                        return new FakePageStub;
+                    }
+               ));
+
+        // We test the fake list is returned correctly
+        $files = $manager->getFiles();
+        $this->assertEquals($fakeFileList, $files);
+
+        // Get the pages
+        $pages = $manager->getPages();
+
+        // Test the results of `getPages`
+        $this->assertInstanceOf(Collection::class, $pages);
+        $this->assertCount(9, $pages);
+        $this->assertEquals([
+            'Bar',
+            'Foo/Canada',
+            'Foo/France',
+            'Foo/Japan',
+            'Foo/Mexico',
+            'Foo/Mexico/Mexican',
+            'Foo/Brazil',
+            'Foo/Italy',
+            'Foo'
+        ], $pages->pluck('slug')->toArray());
+
+        // Now we'll try to find a page using the previous results
+        $page = $manager->findPage('Foo/Italy');
+        $this->assertInstanceOf(MarkdownPageInterface::class, $page);
+        $this->assertEquals('02.Foo/05.Italy/docs.md', $page->relativePath);
+        $this->assertEquals('Foo/Italy', $page->slug);
     }
 
     /**
@@ -157,4 +228,18 @@ class MarkdownPagesTest extends TestCase
         // Actually check the result this time
         $this->assertEquals('<p>Hello <em>World</em>!</p>', $content);
     }
+}
+
+/**
+ *    Stub replacing the real MarkdownPage
+ */
+class FakePageStub implements MarkdownPageInterface
+{
+    public function getMetadata() {}
+    public function getTitle() {}
+    public function getDescription() {}
+    public function getFilename() {}
+    public function getTemplate() {}
+    public function getPath() {}
+    public function getContent() {}
 }
