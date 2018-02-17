@@ -31,6 +31,20 @@ class MarkdownPagesController extends SimpleController
      */
     public function displayPage(Request $request, Response $response, $args)
     {
-        
+        // Create manager instance
+        $manager = new MarkdownPagesManager($this->ci);
+
+        // Get the file instance. A file not found exception will be thrown
+        // if the page doesn't exist
+        $file = $manager->findPage($args['path']);
+
+        // We'll try to find the right template
+        $template = $file->getTemplate();
+
+        // Render the page
+        $this->ci->view->render($response, "markdownPages/$template.html.twig", [
+           'content'    => $file->getContent(),
+           'metadata'   => $file->getMetadata()
+        ]);
     }
 }

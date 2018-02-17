@@ -28,7 +28,7 @@ use UserFrosting\Support\Exception\FileNotFoundException;
 class MarkdownPage implements MarkdownPageInterface
 {
     /**
-     * @var Cache The cache service instance
+     * @var Cache|null The cache service instance
      */
     protected $cache;
 
@@ -36,11 +36,6 @@ class MarkdownPage implements MarkdownPageInterface
      * @var string The file path
      */
     protected $path;
-
-    /**
-     * @var array The file metadata
-     */
-    protected $metadata;
 
     /**
      * @var string The file raw content
@@ -74,7 +69,7 @@ class MarkdownPage implements MarkdownPageInterface
         // Create Markdown parser instance
         $this->parser = new MetaParsedown();
 
-        // Load the page
+        // Load the file
         $this->load();
     }
 

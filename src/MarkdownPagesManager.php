@@ -9,6 +9,8 @@
 */
 namespace UserFrosting\Sprinkle\MarkdownPages;
 
+use Illuminate\Support\Collection;
+
 use Illuminate\Filesystem\Filesystem;
 use Interop\Container\ContainerInterface;
 use UserFrosting\Support\Exception\FileNotFoundException;
@@ -39,17 +41,20 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Get a list of all the pages available across all active sprinkles
+     *    Get a list of all the files found across all active sprinkles
      *    TODO : Cache the result
      *
      *    @return array An array of absolute paths
      */
-    public function getPages()
+    public function getFiles()
     {
+        /** @var \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator $locator */
+        $locator = $this->getLocator();
+
         // Get all markdown pages
-        // N.B.: Replace with custom locator once UF issue #853 is resolve
+        // N.B.: Replace with custom locator url once UF issue #853 is resolve
         // @see https://github.com/userfrosting/UserFrosting/issues/853
-        $paths = $this->ci->locator->findResources('extra://pages/');
+        $paths = $locator->findResources('extra://pages/');
 
         $pages = [];
         foreach ($paths as $path) {
@@ -67,7 +72,7 @@ class MarkdownPagesManager
      *    Return an instance for a given page
      *
      *    @param  string $path The page path
-     *    @return MarkdownPage The page instance
+     *    @return MarkdownPageInterface The page instance
      */
     public function getPage($path)
     {
@@ -78,28 +83,102 @@ class MarkdownPagesManager
      *    Finds a page in the available list by searching for the reltive path
      *    after `pages/`
      *
-     *    @param  string $path The page slug + relative path
-     *    @return MarkdownPage The page instance
+     *    @param  string $slug The page slug, aka the part of url after the base `pages/` path
+     *    @return MarkdownPageInterface The page instance
      *    @throws FileNotFoundException If page is not found
      */
-    public function findPage($path)
+    public function findPage($slug)
     {
-        // return MarkdownPage
+        $pages = $this->getPages();
+
+        $page = $pages->where('slug', $slug)->first();
+
+        if (!$page) {
+            throw new FileNotFoundException;
+        }
+
+        return $page;
+    }
+
+    /**
+     *    Get a list of all the pages found across all active sprinkles.
+     *    Returns a collection of MarkdownPage to which are added some custom
+     *    public property, such as the relative path and the page url.
+     *    TODO : Cache the result
+     *
+     *    @return Collection
+     */
+    public function getPages()
+    {
+        /** @var \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator $locator */
+        $locator = $this->getLocator();
+
+        /** @var \UserFrosting\Sprinkle\Core\Router $router */
+        $router = $this->ci->router;
+
+        // Get all the files
+        $files = $this->getFiles();
+
+        // Create a collection for our tree
+        $pages = collect();
+
+        // Loop through files to populate pages
+        foreach ($files as $filePath) {
+
+
+            // Get the full absolute path
+            $path = $locator->findResource('extra://pages/' . $filePath);
+
+            // Get the page instance
+            $page = $this->getPage($path);
+
+            // Add the relative path
+            $page->relativePath = $filePath;
+
+            // Add the slug
+            $page->slug = $this->pathToSlug($page->relativePath);
+
+
+            // Add page to the collection
+            $pages->push($page);
+        }
+
+        return $pages;
+    }
+
+    /**
+     *    Return the ressouce locator
+     *    @return \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator
+     */
+    protected function getLocator()
+    {
+        return $this->ci->locator;
+    }
+
+    /**
+     *    Convert a relative path to the url slug
+     *
+     *    @param  string $relativePath The relative path
+     *    @return string The slug
+     */
+    protected function pathToSlug($relativePath)
+    {
+        $dir = $this->filesystem->dirname($relativePath);
+
+        // We need to remove the order number form the path to get the slug
+        $dirFragments = explode('/', $dir);
+        foreach ($dirFragments as $key => $fragment) {
+            $fragmentList = explode('.', $fragment);
+            $dirFragments[$key] = $fragmentList[1];
+        }
+
+        // Glue the fragments back together
+        return implode('/', $dirFragments);
     }
 
     public function getTree()
     {
-        //return array - nested list of files. Needs metadata of each files
-    }
-
-    /**
-     *    Return the page url
-     *
-     *    @param  MarkdownPage $page The page
-     *    @return string The url
-     */
-    public function getPageUrl(MarkdownPage $page)
-    {
+        //return array - nested list of pages. Needs metadata of each pages
     }
 
     /**
@@ -117,40 +196,10 @@ class MarkdownPagesManager
         // Get pages
         $pages = $this->filesystem->allFiles($directory);
 
-        // Transform the Symfony SplFileInfo object to string so we only get the path
-        return array_map('strval', $pages);
-    }
+        $pages = array_map(function ($page) {
+            return $page->getRelativePathname();
+        }, $pages);
 
-    /**
-     *    Returns all the path where we can find pages
-     *    N.B.: Replace with locator once UF issue #853 is resolve
-     *    @see https://github.com/userfrosting/UserFrosting/issues/853
-     *
-     *    @return array List of absolute paths
-     */
-    public function getPaths()
-    {
-        $paths = [];
-        foreach ($this->ci->sprinkleManager->getSprinkleNames() as $sprinkleName) {
-            $paths[] = $this->pagesDirectoryPath($sprinkleName);
-        }
-        return $paths;
-    }
-
-    /**
-     *    Return the path where we can find the pages in a given sprinkle
-     *    N.B.: Replace with locator once UF issue #853 is resolve
-     *    @see https://github.com/userfrosting/UserFrosting/issues/853
-     *
-     *    @param  string $sprinkleName The sprinkle name
-     *    @return string The path where pages are stored
-     */
-    protected function pagesDirectoryPath($sprinkleName)
-    {
-        return \UserFrosting\SPRINKLES_DIR .
-               \UserFrosting\DS .
-               $sprinkleName .
-               \UserFrosting\DS .
-               \MarkdownPages\PAGES_PATH;
+        return $pages;
     }
 }
