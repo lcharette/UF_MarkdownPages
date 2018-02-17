@@ -47,16 +47,18 @@ class MarkdownPagesManager
     public function getPages()
     {
         // Get all markdown pages
-        // N.B.: Replace with locator once UF issue #853 is resolve
+        // N.B.: Replace with custom locator once UF issue #853 is resolve
         // @see https://github.com/userfrosting/UserFrosting/issues/853
-        //$paths = $this->locator->findResources('pages://');
-        $paths = $this->getPaths();
+        $paths = $this->ci->locator->findResources('extra://pages/');
 
         $pages = [];
         foreach ($paths as $path) {
             $pathPages = $this->getPagesFromDirectory($path);
             $pages = array_merge($pathPages, $pages);
         }
+
+        // Remove duplicates
+        $pages = array_unique($pages);
 
         return $pages;
     }

@@ -64,14 +64,19 @@ class MarkdownPagesTest extends TestCase
         $this->assertInstanceOf(MarkdownPagesManager::class, $this->manager);
     }
 
-    // NB: This requires UserFrosting issue #853 to be fixed.
-    // See: https://github.com/userfrosting/UserFrosting/issues/853
-    /*public function testLocator()
+    /**
+     *    Test the custom locator
+     *    TODO : Change to custom `pages://` location. This requires
+     *           UserFrosting issue #853 to be fixed.
+     *    @see   https://github.com/userfrosting/UserFrosting/issues/853
+     *
+     */
+    public function testLocator()
     {
         $locator = $this->ci->locator;
-        $path = $locator->findResources('page://');
+        $path = $locator->findResources('extra://pages/');
         $this->assertInternalType('array', $path);
-    }*/
+    }
 
     /**
      *    Test the `getPages` method

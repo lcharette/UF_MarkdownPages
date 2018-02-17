@@ -68,17 +68,6 @@ class MarkdownPage implements MarkdownPageInterface
         // Create Markdown parser instance
         $this->parser = new MetaParsedown();
 
-        // Make sure the page exist
-        if (!$this->filesystem->exists($this->path)) {
-            throw new FileNotFoundException;
-        }
-
-        // Make sure file is markdown
-        if ($this->filesystem->extension($this->path) != 'md' || $this->filesystem->mimeType($this->path) != 'text/plain') {
-            $filename = basename($path);
-            throw new InvalidArgumentException("File `$filename` doesn't seems to be a valid markdown file.");
-        }
-
         // Load the page
         $this->load();
     }
@@ -91,6 +80,18 @@ class MarkdownPage implements MarkdownPageInterface
      */
     protected function load()
     {
+        // Make sure the page exist
+        if (!$this->filesystem->exists($this->path)) {
+            throw new FileNotFoundException;
+        }
+
+        // Make sure file is markdown
+        if ($this->filesystem->extension($this->path) != 'md' || $this->filesystem->mimeType($this->path) != 'text/plain') {
+            $filename = basename($path);
+            throw new InvalidArgumentException("File `$filename` doesn't seems to be a valid markdown file.");
+        }
+
+        // Get content
         $this->rawContent = $this->filesystem->get($this->path);
     }
 
