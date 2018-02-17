@@ -26,6 +26,9 @@ class ServicesProvider
          *    Extends the 'locator' service with custom streams
          *    Custom stream added: pages://
          */
+        // NB: This requires UserFrosting issue #853 to be fixed.
+        // This service can't be extend as of now
+        // @see: https://github.com/userfrosting/UserFrosting/issues/853
         /*$container->extend('streamBuilder', function ($app) {
             //$locator->addPath('pages', '', \UserFrosting\APP_DIR_NAME . '/pages');
             return $app['streamBuilder'];

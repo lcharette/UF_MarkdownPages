@@ -9,8 +9,9 @@
 */
 namespace UserFrosting\Sprinkle\MarkdownPages;
 
-use Illuminate\Cache\Repository as Cache;
-use RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator;
+use Illuminate\Filesystem\Filesystem;
+use Interop\Container\ContainerInterface;
+use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**
  *   MarkdownPagesManager
@@ -18,33 +19,68 @@ use RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator;
 class MarkdownPagesManager
 {
     /**
-     * @var UniformResourceLocator $locator
+     * @var ContainerInterface $ci The DI Container
      */
-    protected $locator;
+    protected $ci;
 
     /**
-     * @var Cache $cache
+     *    @var Filesystem
      */
-    protected $cache;
+    protected $filesystem;
 
     /**
      *    Constructor
-     *
-     *    @param UniformResourceLocator $locator
-     *    @param Cache                  $cache
+     *    @param ContainerInterface $ci
      */
-    public function __construct(UniformResourceLocator $locator, Cache $cache)
+    public function __construct(ContainerInterface $ci)
     {
-        $this->locator = $locator;
-        $this->cache = $cache;
+        $this->ci = $ci;
+        $this->filesystem = new Filesystem;
     }
 
-    public function getAllFiles()
+    /**
+     *    Get a list of all the pages available across all active sprinkles
+     *    TODO : Cache the result
+     *
+     *    @return array An array of absolute paths
+     */
+    public function getPages()
     {
-        // Return [MarkdownPage]
+        // Get all markdown pages
+        // N.B.: Replace with locator once UF issue #853 is resolve
+        // @see https://github.com/userfrosting/UserFrosting/issues/853
+        //$paths = $this->locator->findResources('pages://');
+        $paths = $this->getPaths();
+
+        $pages = [];
+        foreach ($paths as $path) {
+            $pathPages = $this->getPagesFromDirectory($path);
+            $pages = array_merge($pathPages, $pages);
+        }
+
+        return $pages;
     }
 
-    public function getFile($path)
+    /**
+     *    Return an instance for a given page
+     *
+     *    @param  string $path The page path
+     *    @return MarkdownPage The page instance
+     */
+    public function getPage($path)
+    {
+        return new MarkdownPage($this->ci->cache, $path);
+    }
+
+    /**
+     *    Finds a page in the available list by searching for the reltive path
+     *    after `pages/`
+     *
+     *    @param  string $path The page slug + relative path
+     *    @return MarkdownPage The page instance
+     *    @throws FileNotFoundException If page is not found
+     */
+    public function findPage($path)
     {
         // return MarkdownPage
     }
@@ -55,40 +91,64 @@ class MarkdownPagesManager
     }
 
     /**
-     * @return Cache
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
-     * @param Cache $cache
+     *    Return the page url
      *
-     * @return static
+     *    @param  MarkdownPage $page The page
+     *    @return string The url
      */
-    public function setCache(Cache $cache)
+    public function getPageUrl(MarkdownPage $page)
     {
-        $this->cache = $cache;
-        return $this;
     }
 
     /**
-     * @return UniformResourceLocator
+     *    Return all pages inside a given directory
+     *    @param  string $directory The absolute path to a directory
+     *    @return array
      */
-    public function getLocator()
+    protected function getPagesFromDirectory($directory)
     {
-        return $this->locator;
+        // If directory diesn't exist, stop
+        if (!$this->filesystem->exists($directory)) {
+            return [];
+        }
+
+        // Get pages
+        $pages = $this->filesystem->allFiles($directory);
+
+        // Transform the Symfony SplFileInfo object to string so we only get the path
+        return array_map('strval', $pages);
     }
 
     /**
-     * @param UniformResourceLocator $locator
+     *    Returns all the path where we can find pages
+     *    N.B.: Replace with locator once UF issue #853 is resolve
+     *    @see https://github.com/userfrosting/UserFrosting/issues/853
      *
-     * @return static
+     *    @return array List of absolute paths
      */
-    public function setLocator(UniformResourceLocator $locator)
+    public function getPaths()
     {
-        $this->locator = $locator;
-        return $this;
+        $paths = [];
+        foreach ($this->ci->sprinkleManager->getSprinkleNames() as $sprinkleName) {
+            $paths[] = $this->pagesDirectoryPath($sprinkleName);
+        }
+        return $paths;
+    }
+
+    /**
+     *    Return the path where we can find the pages in a given sprinkle
+     *    N.B.: Replace with locator once UF issue #853 is resolve
+     *    @see https://github.com/userfrosting/UserFrosting/issues/853
+     *
+     *    @param  string $sprinkleName The sprinkle name
+     *    @return string The path where pages are stored
+     */
+    protected function pagesDirectoryPath($sprinkleName)
+    {
+        return \UserFrosting\SPRINKLES_DIR .
+               \UserFrosting\DS .
+               $sprinkleName .
+               \UserFrosting\DS .
+               \MarkdownPages\PAGES_PATH;
     }
 }

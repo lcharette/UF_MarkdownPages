@@ -11,13 +11,15 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use UserFrosting\Sprinkle\MarkdownPages\MarkdownPagesManager;
+
 use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 
 /**
  * AnalyseController Class
  * Controller class for the 'analyse' views
  */
-class MarkdownPages extends SimpleController
+class MarkdownPagesController extends SimpleController
 {
     /**
      *    Display page
@@ -29,7 +31,6 @@ class MarkdownPages extends SimpleController
      */
     public function displayPage(Request $request, Response $response, $args)
     {
-        print_r($args);
-        exit;
+        
     }
 }

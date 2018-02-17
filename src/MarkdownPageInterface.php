@@ -16,9 +16,8 @@ interface MarkdownPageInterface
 {
     public function getMetadata();
     public function getTitle();
-    public function getSlug();
+    public function getFilename();
     public function getDescription();
     public function getPath();
-    public function getUrl();
     public function getContent();
 }

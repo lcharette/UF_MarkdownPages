@@ -8,7 +8,7 @@
  *    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
  */
 
-use UserFrosting\Sprinkle\MarkdownPages\Controller\MarkdownPages;
+use UserFrosting\Sprinkle\MarkdownPages\Controller\MarkdownPagesController;
 
 $config = $app->getContainer()->get('config');
-$app->get('/' . $config['MarkdownPages.route'] . '/{path:.+}', MarkdownPages::class . ':displayPage')->setName('markdownPages');
+$app->get('/' . $config['MarkdownPages.route'] . '/{path:.+}', MarkdownPagesController::class . ':displayPage')->setName('markdownPages');
