@@ -17,7 +17,13 @@ use UserFrosting\Sprinkle\MarkdownPages\MarkdownPageInterface;
 use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**
- *   MarkdownPage
+ *    MarkdownPage
+ *
+ *    Pages are loaded from an absolute path and represent a page (file)
+ *    instance. This class can't locate any pages/files from the filesystem.
+ *    It simply check if the file exist and that's it's a markdown file.
+ *    To find files, get it's relative path or url, MarkdownPagesManager can
+ *    help.
  */
 class MarkdownPage implements MarkdownPageInterface
 {
@@ -54,10 +60,10 @@ class MarkdownPage implements MarkdownPageInterface
     /**
      *    Constructor
      *
-     *    @param Cache $cache The cache service
      *    @param string $path The file full path
+     *    @param Cache|null $cache The cache service
      */
-    public function __construct(Cache $cache, $path)
+    public function __construct($path, Cache $cache = null)
     {
         $this->cache = $cache;
         $this->path = $path;

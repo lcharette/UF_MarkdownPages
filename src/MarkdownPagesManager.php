@@ -71,7 +71,7 @@ class MarkdownPagesManager
      */
     public function getPage($path)
     {
-        return new MarkdownPage($this->ci->cache, $path);
+        return new MarkdownPage($path, $this->ci->cache);
     }
 
     /**

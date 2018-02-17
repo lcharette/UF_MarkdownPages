@@ -109,7 +109,7 @@ class MarkdownPagesTest extends TestCase
      */
     public function test_MarkdownPage()
     {
-        $page = new MarkdownPage($this->ci->cache, $this->testPage);
+        $page = new MarkdownPage($this->testPage);
         $this->assertInstanceOf(MarkdownPage::class, $page);
 
         // Test metadata
@@ -135,7 +135,7 @@ class MarkdownPagesTest extends TestCase
      */
     public function test_MarkdownPage_noMetadata()
     {
-        $page = new MarkdownPage($this->ci->cache, $this->testPageNoMetadata);
+        $page = new MarkdownPage($this->testPageNoMetadata);
         $this->assertInstanceOf(MarkdownPage::class, $page);
 
         // Test metadata
