@@ -10,6 +10,7 @@
 namespace UserFrosting\Sprinkle\MarkdownPages\ServicesProvider;
 
 use Interop\Container\ContainerInterface;
+use UserFrosting\Sprinkle\MarkdownPages\Twig\MarkdownPagesExtension;
 
 /**
  *    ServicesProvider class.
@@ -33,5 +34,18 @@ class ServicesProvider
             //$locator->addPath('pages', '', \UserFrosting\APP_DIR_NAME . '/pages');
             return $app['streamBuilder'];
         });*/
+
+        /**
+         * Extends the 'view' service with the AccountExtension for Twig.
+         *
+         * Adds account-specific functions, globals, filters, etc to Twig.
+         */
+        $container->extend('view', function ($view, $c) {
+            $twig = $view->getEnvironment();
+            $extension = new MarkdownPagesExtension($c);
+            $twig->addExtension($extension);
+
+            return $view;
+        });
     }
 }

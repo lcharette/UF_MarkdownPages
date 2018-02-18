@@ -34,6 +34,16 @@ Run `composer update` and `php bakery bake` to install the sprinkle.
 
 TODO
 
+## Adding the page treeview
+
+To add the page treeview, simply include the provided template in `templates/navigation/sidebar-menu.html.twig` :
+
+```
+{% include 'navigation/markdownPages.html.twig' %}
+```
+
+See [UserFrosting documentation](https://learn.userfrosting.com/recipes/extending-template#adding-custom-menu-entries) for more details on how to add custom entries to the sidebar menu.
+
 # Running tests
 
 This sprinkle comes supports automated testing. Before submitting a new Pull Request, you need to make sure all tests are a go. With the sprinkle added to your UserFrosting installation, simply execute the `php bakery test` command to run the tests.

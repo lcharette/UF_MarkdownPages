@@ -1,0 +1,30 @@
+{% block markdownPagesTree %}
+    {% import _self as templates %}
+    {% for page in markdownPagesTree %}
+        {{ templates.menuTemplate(page) }}
+    {% endfor %}
+{% endblock %}
+
+{% macro menuTemplate(page) %}
+    {% import _self as templates %}
+    {% if page.children is empty %}
+        <li>
+            <a href="{{page.url}}"><i class="fa {{ page.metadata.icon|default('fa-circle-o') }} fa-fw"></i> <span>{{ page.metadata.title }}</span></a>
+        </li>
+    {% else %}
+        <li class="treeview">
+            <a href="#">
+                <i class="fa {{ page.metadata.icon|default('fa-circle-o') }} fa-fw"></i>
+                <span style="white-space: normal;">{{ page.metadata.title }}</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                {% for childPage in page.children %}
+                    {{ templates.menuTemplate(childPage) }}
+                {% endfor %}
+            </ul>
+        </li>
+    {% endif %}
+{% endmacro %}

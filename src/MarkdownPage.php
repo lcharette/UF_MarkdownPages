@@ -88,8 +88,8 @@ class MarkdownPage implements MarkdownPageInterface
 
         // Make sure file is markdown
         if ($this->filesystem->extension($this->path) != 'md' || $this->filesystem->mimeType($this->path) != 'text/plain') {
-            $filename = basename($path);
-            throw new InvalidArgumentException("File `$filename` doesn't seems to be a valid markdown file.");
+            $filename = basename($this->path);
+            throw new InvalidArgumentException("File `$filename` ({$this->filesystem->mimeType($this->path)}) doesn't seems to be a valid markdown file.");
         }
 
         // Get content
