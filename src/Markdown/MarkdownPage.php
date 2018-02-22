@@ -7,12 +7,12 @@
 *    @link      https://github.com/lcharette/UF_MarkdownPages
 *    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
 */
-namespace UserFrosting\Sprinkle\MarkdownPages;
+namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 
 use InvalidArgumentException;
 use Illuminate\Cache\Repository as Cache;
 use Illuminate\Filesystem\Filesystem;
-use UserFrosting\Sprinkle\MarkdownPages\MarkdownPageInterface;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPageInterface;
 use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**

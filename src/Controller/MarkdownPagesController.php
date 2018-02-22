@@ -11,7 +11,7 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use UserFrosting\Sprinkle\MarkdownPages\MarkdownPagesManager;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPagesManager;
 use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 
 /**

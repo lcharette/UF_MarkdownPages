@@ -14,9 +14,9 @@ use InvalidArgumentException;
 use Pagerange\Markdown\MetaParsedown;
 use Illuminate\Support\Collection;
 use UserFrosting\Tests\TestCase;
-use UserFrosting\Sprinkle\MarkdownPages\MarkdownPage;
-use UserFrosting\Sprinkle\MarkdownPages\MarkdownPageInterface;
-use UserFrosting\Sprinkle\MarkdownPages\MarkdownPagesManager;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPage;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPageInterface;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPagesManager;
 use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**

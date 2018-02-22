@@ -10,7 +10,7 @@
 namespace UserFrosting\Sprinkle\MarkdownPages\Twig;
 
 use Interop\Container\ContainerInterface;
-use UserFrosting\Sprinkle\MarkdownPages\MarkdownPagesManager;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPagesManager;
 use Twig_Extension;
 
 /**
