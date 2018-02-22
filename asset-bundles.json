@@ -11,6 +11,18 @@
                     }
                 }
             }
+        },
+        "js/markdown": {
+            "scripts": [
+                "js/vendor/jquery.toc.js"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                      "scripts": "plain"
+                    }
+                }
+            }
         }
     }
 }

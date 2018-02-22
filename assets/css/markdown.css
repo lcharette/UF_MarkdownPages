@@ -1,3 +1,5 @@
+/* NOTICES
+=====================*/
 .notices {
     padding: 1px 1px 1px 30px;
     margin: 15px 0;
@@ -25,4 +27,41 @@
     border-left: 10px solid #5cb85c;
     background: #f1f9f1;
     color: #3d8b3d;
+}
+
+/* TOC
+=====================*/
+.toc {
+    border-bottom: 1px solid lightgrey;
+    margin-bottom: 10px;
+}
+
+.toc ol {
+    list-style-type: none;
+    padding-left: 0px;
+    line-height: 1.5;
+    font-size: 16px;
+}
+
+.toc ol ol {
+    margin-left: 2rem;
+}
+
+.toc ol ol ol {
+    margin-left: 3rem;
+}
+
+.toc li a:before {
+    content: '#';
+    padding-right: 5px;
+}
+
+/* Custom page style
+=====================*/
+.markdown h2 {
+    font-size: 24px;
+}
+
+.markdown h3 {
+    font-size: 18px;
 }
