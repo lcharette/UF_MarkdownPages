@@ -11,6 +11,7 @@ namespace UserFrosting\Tests\Unit;
 
 use Mockery as m;
 use InvalidArgumentException;
+use Pagerange\Markdown\MetaParsedown;
 use Illuminate\Support\Collection;
 use UserFrosting\Tests\TestCase;
 use UserFrosting\Sprinkle\MarkdownPages\MarkdownPage;
@@ -45,6 +46,9 @@ class MarkdownPagesTest extends TestCase
     {
         // Setup parent first to get access to the container
         parent::setUp();
+
+        // Overwrite any custom parser to avoid false negative
+        $this->ci->markdown = new MetaParsedown();
 
         // Setup manager
         $this->manager = new MarkdownPagesManager($this->ci);
@@ -186,7 +190,7 @@ class MarkdownPagesTest extends TestCase
         $tree = $manager->getTree('Foo/Mexico');
         $this->assertInstanceOf(Collection::class, $tree);
         $this->assertCount(1, $tree);
-        $this->assertEquals('Foo/Mexico/Mexican/Bar', $tree['Mexican']->children['Bar']->slug);        
+        $this->assertEquals('Foo/Mexico/Mexican/Bar', $tree['Mexican']->children['Bar']->slug);
     }
 
     /**
@@ -194,7 +198,7 @@ class MarkdownPagesTest extends TestCase
      */
     public function test_MarkdownPage()
     {
-        $page = new MarkdownPage($this->testPage);
+        $page = new MarkdownPage($this->testPage, $this->ci->markdown);
         $this->assertInstanceOf(MarkdownPage::class, $page);
 
         // Test metadata
@@ -220,7 +224,7 @@ class MarkdownPagesTest extends TestCase
      */
     public function test_MarkdownPage_noMetadata()
     {
-        $page = new MarkdownPage($this->testPageNoMetadata);
+        $page = new MarkdownPage($this->testPageNoMetadata, $this->ci->markdown);
         $this->assertInstanceOf(MarkdownPage::class, $page);
 
         // Test metadata

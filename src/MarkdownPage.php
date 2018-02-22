@@ -12,7 +12,6 @@ namespace UserFrosting\Sprinkle\MarkdownPages;
 use InvalidArgumentException;
 use Illuminate\Cache\Repository as Cache;
 use Illuminate\Filesystem\Filesystem;
-use Pagerange\Markdown\MetaParsedown;
 use UserFrosting\Sprinkle\MarkdownPages\MarkdownPageInterface;
 use UserFrosting\Support\Exception\FileNotFoundException;
 
@@ -48,7 +47,7 @@ class MarkdownPage implements MarkdownPageInterface
     protected $filesystem;
 
     /**
-     *    @var MetaParsedown The markdown parser
+     *    @var \Pagerange\Markdown\MetaParsedown The markdown parser
      */
     protected $parser;
 
@@ -56,9 +55,10 @@ class MarkdownPage implements MarkdownPageInterface
      *    Constructor
      *
      *    @param string $path The file full path
+     *    @param \Pagerange\Markdown\MetaParsedown $markdown The markdown parser
      *    @param Cache|null $cache The cache service
      */
-    public function __construct($path, Cache $cache = null)
+    public function __construct($path, $markdown, Cache $cache = null)
     {
         $this->cache = $cache;
         $this->path = $path;
@@ -67,7 +67,7 @@ class MarkdownPage implements MarkdownPageInterface
         $this->filesystem = new Filesystem;
 
         // Create Markdown parser instance
-        $this->parser = new MetaParsedown();
+        $this->parser = $markdown;
 
         // Load the file
         $this->load();

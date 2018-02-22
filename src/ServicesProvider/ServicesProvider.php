@@ -10,6 +10,7 @@
 namespace UserFrosting\Sprinkle\MarkdownPages\ServicesProvider;
 
 use Interop\Container\ContainerInterface;
+use Pagerange\Markdown\MetaParsedown;
 use UserFrosting\Sprinkle\MarkdownPages\Twig\MarkdownPagesTwigExtension;
 
 /**
@@ -23,6 +24,13 @@ class ServicesProvider
      */
     public function register(ContainerInterface $container)
     {
+        /**
+         * Returns a callback that handles setting the `UF-Redirect` header after a successful login.
+         */
+        $container['markdown'] = function ($c) {
+            return new MetaParsedown();
+        };
+
         /**
          *    Extends the 'locator' service with custom streams
          *    Custom stream added: pages://
