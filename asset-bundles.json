@@ -1,0 +1,16 @@
+{
+    "bundle": {
+        "css/markdown": {
+            "styles": [
+                "css/markdown.css"
+            ],
+            "options": {
+                "result": {
+                    "type": {
+                      "styles": "plain"
+                    }
+                }
+            }
+        }
+    }
+}

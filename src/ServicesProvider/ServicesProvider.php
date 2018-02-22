@@ -10,7 +10,9 @@
 namespace UserFrosting\Sprinkle\MarkdownPages\ServicesProvider;
 
 use Interop\Container\ContainerInterface;
-use Pagerange\Markdown\MetaParsedown;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parsedown;
+use RocketTheme\Toolbox\Event\Event;
+use RocketTheme\Toolbox\Event\EventDispatcher;
 use UserFrosting\Sprinkle\MarkdownPages\Twig\MarkdownPagesTwigExtension;
 
 /**
@@ -28,7 +30,17 @@ class ServicesProvider
          * Returns a callback that handles setting the `UF-Redirect` header after a successful login.
          */
         $container['markdown'] = function ($c) {
-            return new MetaParsedown();
+
+            /** @var EventDispatcher $events */
+            $eventDispatcher = $c->eventDispatcher;
+
+            // Get instance
+            $markdown = new Parsedown();
+
+            // Fire `onMarkdownInitialized` event
+            $eventDispatcher->dispatch('onMarkdownInitialized', new Event(['markdown' => $markdown]));
+
+            return $markdown;
         };
 
         /**

@@ -3,3 +3,7 @@
 {% block page_title %}{{metadata.title}}{% endblock %}
 {% block page_description %}{{metadata.description}}{% endblock %}
 {% block body_matter %}{{content | raw}}{% endblock %}
+
+{% block stylesheets_page %}
+    {{ assets.css('css/markdown') | raw }}
+{% endblock %}

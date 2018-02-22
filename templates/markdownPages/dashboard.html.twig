@@ -7,3 +7,7 @@
         <div class="box-body">{{content | raw}}</div>
     </div>
 {% endblock %}
+
+{% block stylesheets_page %}
+    {{ assets.css('css/markdown') | raw }}
+{% endblock %}
