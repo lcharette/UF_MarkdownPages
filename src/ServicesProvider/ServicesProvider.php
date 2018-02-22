@@ -10,7 +10,7 @@
 namespace UserFrosting\Sprinkle\MarkdownPages\ServicesProvider;
 
 use Interop\Container\ContainerInterface;
-use UserFrosting\Sprinkle\MarkdownPages\Twig\MarkdownPagesExtension;
+use UserFrosting\Sprinkle\MarkdownPages\Twig\MarkdownPagesTwigExtension;
 
 /**
  *    ServicesProvider class.
@@ -42,7 +42,7 @@ class ServicesProvider
          */
         $container->extend('view', function ($view, $c) {
             $twig = $view->getEnvironment();
-            $extension = new MarkdownPagesExtension($c);
+            $extension = new MarkdownPagesTwigExtension($c);
             $twig->addExtension($extension);
 
             return $view;

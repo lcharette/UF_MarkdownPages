@@ -14,10 +14,10 @@ use UserFrosting\Sprinkle\MarkdownPages\MarkdownPagesManager;
 use Twig_Extension;
 
 /**
- * MarkdownPagesExtension class.
+ * MarkdownPagesTwigExtension class.
  * Extends Twig functionality for the MarkdownPages sprinkle.
  */
-class MarkdownPagesExtension extends Twig_Extension
+class MarkdownPagesTwigExtension extends Twig_Extension
 {
     /**
      * @var ContainerInterface The global container object, which holds all your services.
