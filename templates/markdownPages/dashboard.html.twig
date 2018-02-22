@@ -22,5 +22,5 @@
 {% endblock %}
 
 {% block scripts_page %}
-    {% if metadata.toc %}{{ assets.js('js/markdown') | raw }}{% endif %}
+    {% if not metadata.hide_toc %}{{ assets.js('js/markdown') | raw }}{% endif %}
 {% endblock %}
