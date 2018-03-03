@@ -29,11 +29,17 @@
 /* Custom page style
 =====================*/
 .markdown {
+    h1, h2, h3, h4 {
+        text-decoration: underline;
+    }
     h2 {
         font-size: 24px;
     }
     h3 {
         font-size: 18px;
+    }
+    h4 {
+        font-size: 16px;
     }
 
     img {
