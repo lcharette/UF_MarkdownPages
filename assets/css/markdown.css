@@ -1,34 +1,3 @@
-/* NOTICES
-=====================*/
-.notices {
-    padding: 1px 1px 1px 30px;
-    margin: 15px 0;
-}
-
-.notices.yellow {
-    border-left: 10px solid #f0ad4e;
-    background: #fcf8f2;
-    color: #df8a13;
-}
-
-.notices.red {
-    border-left: 10px solid #d9534f;
-    background: #fdf7f7;
-    color: #b52b27;
-}
-
-.notices.blue {
-    border-left: 10px solid #5bc0de;
-    background: #f4f8fa;
-    color: #28a1c5;
-}
-
-.notices.green {
-    border-left: 10px solid #5cb85c;
-    background: #f1f9f1;
-    color: #3d8b3d;
-}
-
 /* TOC
 =====================*/
 .toc {
@@ -58,6 +27,11 @@
 
 /* Custom page style
 =====================*/
+.markdown {
+    /* NOTICES
+    =====================*/
+}
+
 .markdown h2 {
     font-size: 24px;
 }
@@ -70,4 +44,47 @@
     max-width: 100%;
     display: block;
     margin: 3rem auto;
+}
+
+@media (min-width: 1200px) {
+    .markdown img {
+        max-width: 75%;
+    }
+}
+
+.markdown p {
+    text-align: justify;
+}
+
+.markdown .notices {
+    padding: 1px 1px 1px 30px;
+    margin: 15px 0;
+}
+
+.markdown .notices.yellow {
+    border-left: 10px solid #f0ad4e;
+    background: #fcf8f2;
+    color: #df8a13;
+}
+
+.markdown .notices.red {
+    border-left: 10px solid #d9534f;
+    background: #fdf7f7;
+    color: #b52b27;
+}
+
+.markdown .notices.blue {
+    border-left: 10px solid #5bc0de;
+    background: #f4f8fa;
+    color: #28a1c5;
+}
+
+.markdown .notices.green {
+    border-left: 10px solid #5cb85c;
+    background: #f1f9f1;
+    color: #3d8b3d;
+}
+
+.markdown .notices p {
+    margin: 10px 0 10px;
 }
