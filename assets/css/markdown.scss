@@ -53,31 +53,41 @@
     /* NOTICES
     =====================*/
     .notices {
-        padding: 1px 1px 1px 30px;
+        padding: 10px 1px 1px 30px;
         margin: 15px 0;
 
         &.yellow {
+            &:before { content: "\f05a   " attr(data-label); }
             border-left: 10px solid #f0ad4e;
             background: #fcf8f2;
             color: #df8a13;
         }
 
         &.red {
+            &:before { content: "\f071   " attr(data-label); }
             border-left: 10px solid #d9534f;
             background: #fdf7f7;
             color: #b52b27;
         }
 
         &.blue {
+            &:before { content: "\f05a   " attr(data-label); }
             border-left: 10px solid #5bc0de;
             background: #f4f8fa;
             color: #28a1c5;
         }
 
         &.green {
+            &:before { content: "\f058   " attr(data-label); }
             border-left: 10px solid #5cb85c;
             background: #f1f9f1;
             color: #3d8b3d;
+        }
+
+        &:before {
+            content: attr(data-label);
+            font-family: FontAwesome;
+            font-weight: bold;
         }
 
         p {

@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* TOC
 =====================*/
 .toc {
@@ -57,7 +58,7 @@
 }
 
 .markdown .notices {
-    padding: 1px 1px 1px 30px;
+    padding: 10px 1px 1px 30px;
     margin: 15px 0;
 }
 
@@ -67,10 +68,18 @@
     color: #df8a13;
 }
 
+.markdown .notices.yellow:before {
+    content: "  " attr(data-label);
+}
+
 .markdown .notices.red {
     border-left: 10px solid #d9534f;
     background: #fdf7f7;
     color: #b52b27;
+}
+
+.markdown .notices.red:before {
+    content: "  " attr(data-label);
 }
 
 .markdown .notices.blue {
@@ -79,10 +88,24 @@
     color: #28a1c5;
 }
 
+.markdown .notices.blue:before {
+    content: "  " attr(data-label);
+}
+
 .markdown .notices.green {
     border-left: 10px solid #5cb85c;
     background: #f1f9f1;
     color: #3d8b3d;
+}
+
+.markdown .notices.green:before {
+    content: "  " attr(data-label);
+}
+
+.markdown .notices:before {
+    content: attr(data-label);
+    font-family: FontAwesome;
+    font-weight: bold;
 }
 
 .markdown .notices p {

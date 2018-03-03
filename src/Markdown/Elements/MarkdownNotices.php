@@ -10,6 +10,7 @@
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown\Elements;
 
 use RocketTheme\Toolbox\Event\Event;
+use UserFrosting\Sprinkle\Core\Facades\Translator;
 
 /**
  *    MarkdownNotices class.
@@ -56,6 +57,7 @@ class MarkdownNotices
                         'handler' => 'lines',
                         'attributes' => [
                             'class' => 'notices '. $this->level_classes[$level],
+                            'data-label' => $this->getNoticeLabel($level)
                         ],
                         'text' => (array) $text,
                     ],
@@ -76,5 +78,17 @@ class MarkdownNotices
                 return $block;
             }
         };
+    }
+
+    /**
+     *    Return the localized label for a notice
+     *
+     *    @param  int $level The notice level
+     *    @return string The localized label
+     */
+    protected function getNoticeLabel($level)
+    {
+        $class = $this->level_classes[$level];
+        return Translator::translate("MARKDOWNPAGES.NOTICES." . strtoupper($class));
     }
 }
