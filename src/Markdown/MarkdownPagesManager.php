@@ -167,6 +167,9 @@ class MarkdownPagesManager
         // Get all pages
         $pages = $this->getPages();
 
+        //Sort the collection
+        $pages = $pages->sortBy('relativePath');
+
         // We start by top most pages (the one without parent) and go down from here
         return $this->getPagesChildren($pages, $topLevel);
     }
