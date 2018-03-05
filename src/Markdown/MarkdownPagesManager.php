@@ -175,6 +175,27 @@ class MarkdownPagesManager
     }
 
     /**
+     *    Set breadcrumbs recursively for the specified page and it's parent
+     *    @param MarkdownPageInterface $page
+     */
+    public function setBreadcrumbs(MarkdownPageInterface $page)
+    {
+        // Add it to the breadcrumb
+        $this->ci->breadcrumb->prepend($page->getTitle(), $page->url);
+
+        // If the page doesn't have a parent, stop here
+        if ($page->parent == "") {
+            return;
+        }
+
+        // Find the parent instance
+        $parent = $this->findPage($page->parent);
+
+        // Add the parent's parent
+        $this->setBreadcrumbs($parent);
+    }
+
+    /**
      *    Function that recursively find children for a given parent slug
      *
      *    @param  Collection $pages A collection of pages

@@ -37,6 +37,9 @@ class MarkdownPagesController extends SimpleController
         // if the page doesn't exist
         $file = $manager->findPage($args['path']);
 
+        // We also need to find and set the breadcrumbs
+        $manager->setBreadcrumbs($file);
+
         // We'll try to find the right template
         $template = $file->getTemplate();
 
