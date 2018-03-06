@@ -15,13 +15,13 @@ use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPagesManager;
 use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 
 /**
- * AnalyseController Class
- * Controller class for the 'analyse' views
+ *    MarkdownPagesController Class
+ *    Controller class for the 'MarkdownPages' views
  */
 class MarkdownPagesController extends SimpleController
 {
     /**
-     *    Display page
+     *    Display Markdown based pages
      *
      *    @param  Request $request
      *    @param  Response $response
