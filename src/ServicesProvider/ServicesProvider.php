@@ -27,7 +27,7 @@ class ServicesProvider
     public function register(ContainerInterface $container)
     {
         /**
-         * Returns a callback that handles setting the `UF-Redirect` header after a successful login.
+         *    Creates the markdown parser service
          */
         $container['markdown'] = function ($c) {
 
@@ -56,9 +56,8 @@ class ServicesProvider
         });*/
 
         /**
-         * Extends the 'view' service with the AccountExtension for Twig.
-         *
-         * Adds account-specific functions, globals, filters, etc to Twig.
+         *    Extends the 'view' service with the MarkdownPagesTwigExtension for Twig.
+         *    Adds `markdownPagesTree` functions to Twig.
          */
         $container->extend('view', function ($view, $c) {
             $twig = $view->getEnvironment();

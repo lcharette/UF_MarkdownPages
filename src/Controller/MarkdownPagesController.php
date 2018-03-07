@@ -15,13 +15,13 @@ use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPagesManager;
 use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 
 /**
- * AnalyseController Class
- * Controller class for the 'analyse' views
+ *    MarkdownPagesController Class
+ *    Controller class for the 'MarkdownPages' views
  */
 class MarkdownPagesController extends SimpleController
 {
     /**
-     *    Display page
+     *    Display Markdown based pages
      *
      *    @param  Request $request
      *    @param  Response $response
@@ -36,6 +36,9 @@ class MarkdownPagesController extends SimpleController
         // Get the file instance. A file not found exception will be thrown
         // if the page doesn't exist
         $file = $manager->findPage($args['path']);
+
+        // We also need to find and set the breadcrumbs
+        $manager->setBreadcrumbs($file);
 
         // We'll try to find the right template
         $template = $file->getTemplate();
