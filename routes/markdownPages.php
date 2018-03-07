@@ -11,4 +11,7 @@
 use UserFrosting\Sprinkle\MarkdownPages\Controller\MarkdownPagesController;
 
 $config = $app->getContainer()->get('config');
-$app->get('/' . $config['MarkdownPages.route'] . '/{path:.+}', MarkdownPagesController::class . ':displayPage')->setName('markdownPages');
+$app->get('/' . $config['MarkdownPages.route'] . '/{path:.+}[/]', MarkdownPagesController::class . ':displayPage')->setName('markdownPages');
+
+// Target the default route and redirect to index if we try to access it
+$app->get('/' . $config['MarkdownPages.route'] . '[/]', MarkdownPagesController::class . ':redirectPlaceholderPage');

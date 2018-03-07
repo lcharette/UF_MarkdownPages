@@ -10,6 +10,7 @@
 
 return [
     'MarkdownPages' => [
-        'route' => 'pages'
+        'defaultPage'  => 'default', // Default page when accessing `/p/
+        'route' => 'p' // Default route. All pages will be placed under `/p/`
     ]
 ];

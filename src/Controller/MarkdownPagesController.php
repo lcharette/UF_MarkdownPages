@@ -33,9 +33,22 @@ class MarkdownPagesController extends SimpleController
         // Create manager instance
         $manager = new MarkdownPagesManager($this->ci);
 
+        // Get path. If we have a trailling slash, we redirect to non trailing version
+        if (substr($request->getUri(), -1) == '/') {
+            return $response->withRedirect(rtrim($request->getUri(), '/'), 302);
+        }
+
         // Get the file instance. A file not found exception will be thrown
         // if the page doesn't exist
         $file = $manager->findPage($args['path']);
+
+        // Get the file metadata
+        $metadata = $file->getMetadata();
+
+        // If file has a redirect metadata, perform the redirect
+        if (isset($metadata['redirect'])) {
+            return $response->withRedirect($metadata['redirect'], 302);
+        }
 
         // We also need to find and set the breadcrumbs
         $manager->setBreadcrumbs($file);
@@ -46,7 +59,33 @@ class MarkdownPagesController extends SimpleController
         // Render the page
         $this->ci->view->render($response, "markdownPages/$template.html.twig", [
            'content'    => $file->getContent(),
-           'metadata'   => $file->getMetadata()
+           'metadata'   => $metadata
         ]);
+    }
+
+    /**
+     *    Redirector when accessing the default route (`/p/` by default)
+     *
+     *    @param  Request $request
+     *    @param  Response $response
+     *    @param  array $args
+     *    @return void
+     */
+    public function redirectPlaceholderPage(Request $request, Response $response, $args)
+    {
+        /** @var \UserFrosting\Support\Repository\Repository $config */
+        $config = $this->ci->config;
+
+        /** @var /UserFrosting\Sprinkle\Core\Router $router */
+        $router = $this->ci->router;
+
+        // Get default page
+        $pageName = $config['MarkdownPages.defaultPage'];
+
+        // Get page route
+        $route = $router->pathFor('markdownPages', ['path' => $pageName]);
+
+        // Redirect
+        return $response->withRedirect($route, 302);
     }
 }
