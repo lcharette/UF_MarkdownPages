@@ -30,6 +30,9 @@ class MarkdownPagesController extends SimpleController
      */
     public function displayPage(Request $request, Response $response, $args)
     {
+        /** @var /UserFrosting\Sprinkle\Core\Router $router */
+        $router = $this->ci->router;
+
         // Create manager instance
         $manager = new MarkdownPagesManager($this->ci);
 
@@ -47,7 +50,8 @@ class MarkdownPagesController extends SimpleController
 
         // If file has a redirect metadata, perform the redirect
         if (isset($metadata['redirect'])) {
-            return $response->withRedirect($metadata['redirect'], 302);
+            $route = $router->pathFor('markdownPages', ['path' => $metadata['redirect']]);
+            return $response->withRedirect($route, 302);
         }
 
         // We also need to find and set the breadcrumbs
