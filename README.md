@@ -8,7 +8,7 @@ Simple flat-file page manager for UserFrosting 4. Drop any markdown file in your
 
 # Help and Contributing
 
-If you need help using this sprinkle or found any bug, feels free to open an issue or submit a pull request. You can also find me on the [UserFrosting Chat](https://chat.userfrosting.com/) most of the time for direct support. You can also contribute to this sprinkle by buying me coffee :
+If you need help using this sprinkle or found any bug, feels free to open an issue or submit a pull request. You can also find me on the [UserFrosting Chat](https://chat.userfrosting.com/) most of the time for direct support. You can also contribute to this sprinkle by buying me coffee.
 
 # Installation
 Edit UserFrosting `app/sprinkles.json` file and add the following to the `require` list : `"lcharette/uf_markdownpages": "^1.0.0"`. Also add `MarkdownPages` to the `base` list. For example:
@@ -31,25 +31,9 @@ Run `composer update` and `php bakery bake` to install the sprinkle.
 
 # Features and usage
 
-TODO
-
-## Adding the page treeview
-
-To add the page treeview, simply include the provided template in `templates/navigation/sidebar-menu.html.twig` :
-
-```
-{% include 'navigation/markdownPages.html.twig' %}
-```
-
-See [UserFrosting documentation](https://learn.userfrosting.com/recipes/extending-template#adding-custom-menu-entries) for more details on how to add custom entries to the sidebar menu.
-
-## Hiding the table of content for a specific page
-
-To hide the table of content, simply add this metadata to a page:
-
-```
-hide_toc: true
-```
+* [Adding the page treeview to the sidebar](docs/SidebarTreeView.md)
+* [Metadata](docs/Metadata.md)
+* [Adding custom markdown blocks](docs/Extending Parsedown.md)
 
 # Running tests
 

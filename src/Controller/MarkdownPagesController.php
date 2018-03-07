@@ -11,6 +11,7 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use UserFrosting\Sprinkle\Account\Authenticate\Exception\AuthExpiredException;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPagesManager;
 use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 
@@ -50,8 +51,25 @@ class MarkdownPagesController extends SimpleController
 
         // If file has a redirect metadata, perform the redirect
         if (isset($metadata['redirect'])) {
-            $route = $router->pathFor('markdownPages', ['path' => $metadata['redirect']]);
-            return $response->withRedirect($route, 302);
+
+            $redirect = trim($metadata['redirect']);
+
+            // We try to find the page. If it doesn't exist, we redirect directly
+            try {
+                $redirectFile = $manager->findPage($redirect);
+                $path = $router->pathFor('markdownPages', ['path' => $redirect]);
+            } catch (\Exception $e) {
+                $path = $redirect;
+            }
+
+            return $response->withRedirect($path, 302);
+        }
+
+        // Check if page metadata requires auth.
+        if (isset($metadata['authGuard']) && $metadata['authGuard'] == true) {
+            if (!$this->ci->authenticator->check()) {
+                throw new AuthExpiredException();
+            }
         }
 
         // We also need to find and set the breadcrumbs
