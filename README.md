@@ -44,6 +44,14 @@ To add the page treeview, simply include the provided template in `templates/nav
 
 See [UserFrosting documentation](https://learn.userfrosting.com/recipes/extending-template#adding-custom-menu-entries) for more details on how to add custom entries to the sidebar menu.
 
+## Hiding the table of content for a specific page
+
+To hide the table of content, simply add this metadata to a page:
+
+```
+hide_toc: true
+```
+
 # Running tests
 
 This sprinkle comes supports automated testing. Before submitting a new Pull Request, you need to make sure all tests are a go. With the sprinkle added to your UserFrosting installation, simply execute the `php bakery test` command to run the tests.
