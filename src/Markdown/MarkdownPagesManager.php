@@ -1,26 +1,28 @@
 <?php
-/**
-*    UF MarkdownPages
-*
-*    @author Louis Charette
-*    @copyright Copyright (c) 2018 Louis Charette
-*    @link      https://github.com/lcharette/UF_MarkdownPages
-*    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
-*/
+
+/*
+ * UF MarkdownPages
+ *
+ * @author    Louis Charette
+ * @copyright Copyright (c) 2018 Louis Charette
+ * @link      https://github.com/lcharette/UF_MarkdownPages
+ * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
+ */
+
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 
-use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 use Interop\Container\ContainerInterface;
 use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**
- *   MarkdownPagesManager
+ *   MarkdownPagesManager.
  */
 class MarkdownPagesManager
 {
     /**
-     * @var ContainerInterface $ci The DI Container
+     * @var ContainerInterface The DI Container
      */
     protected $ci;
 
@@ -30,18 +32,19 @@ class MarkdownPagesManager
     protected $filesystem;
 
     /**
-     *    Constructor
+     *    Constructor.
+     *
      *    @param ContainerInterface $ci
      */
     public function __construct(ContainerInterface $ci)
     {
         $this->ci = $ci;
-        $this->filesystem = new Filesystem;
+        $this->filesystem = new Filesystem();
     }
 
     /**
      *    Get a list of all the files found across all active sprinkles
-     *    TODO : Cache the result
+     *    TODO : Cache the result.
      *
      *    @return array An array of absolute paths
      */
@@ -68,9 +71,10 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Return an instance for a given page
+     *    Return an instance for a given page.
      *
      *    @param  string $path The page path
+     *
      *    @return MarkdownPageInterface The page instance
      */
     public function getPage($path)
@@ -80,11 +84,13 @@ class MarkdownPagesManager
 
     /**
      *    Finds a page in the available list by searching for the reltive path
-     *    after `pages/`
+     *    after `pages/`.
      *
      *    @param  string $slug The page slug, aka the part of url after the base `pages/` path
-     *    @return MarkdownPageInterface The page instance
+     *
      *    @throws FileNotFoundException If page is not found
+     *
+     *    @return MarkdownPageInterface The page instance
      */
     public function findPage($slug)
     {
@@ -95,7 +101,7 @@ class MarkdownPagesManager
         // otherwise file is not found
         $page = $pages->where('slug', $slug)->first();
         if (!$page) {
-            throw new FileNotFoundException;
+            throw new FileNotFoundException();
         }
 
         return $page;
@@ -105,7 +111,7 @@ class MarkdownPagesManager
      *    Get a list of all the pages found across all active sprinkles.
      *    Returns a collection of MarkdownPage to which are added some custom
      *    public property, such as the relative path and the page url.
-     *    TODO : Cache the result
+     *    TODO : Cache the result.
      *
      *    @return Collection
      */
@@ -127,7 +133,7 @@ class MarkdownPagesManager
         foreach ($files as $filePath) {
 
             // Get the full absolute path
-            $path = $locator->findResource('extra://pages/' . $filePath);
+            $path = $locator->findResource('extra://pages/'.$filePath);
 
             // Get the page instance
             $page = $this->getPage($path);
@@ -139,7 +145,7 @@ class MarkdownPagesManager
             $page->slug = $this->pathToSlug($page->relativePath);
 
             // Add the url
-            /**
+            /*
             * TODO: Replace with the proper router `pathFor` method once UF issue #854 is resolve
             * @see https://github.com/userfrosting/UserFrosting/issues/854
             */
@@ -157,9 +163,10 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Function that return the complete page tree used to create a menu
+     *    Function that return the complete page tree used to create a menu.
      *
      *    @param  string $topLevel The top level slug (default '');
+     *
      *    @return Collection
      */
     public function getTree($topLevel = '')
@@ -175,7 +182,8 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Set breadcrumbs recursively for the specified page and it's parent
+     *    Set breadcrumbs recursively for the specified page and it's parent.
+     *
      *    @param MarkdownPageInterface $page
      */
     public function setBreadcrumbs(MarkdownPageInterface $page)
@@ -184,7 +192,7 @@ class MarkdownPagesManager
         $this->ci->breadcrumb->prepend($page->getTitle(), $page->url);
 
         // If the page doesn't have a parent, stop here
-        if ($page->parent == "") {
+        if ($page->parent == '') {
             return;
         }
 
@@ -196,10 +204,11 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Function that recursively find children for a given parent slug
+     *    Function that recursively find children for a given parent slug.
      *
      *    @param  Collection $pages A collection of pages
      *    @param  string $parentSlug The parent slug
+     *
      *    @return Collection The tree of children for that given slug
      */
     protected function getPagesChildren($pages, $parentSlug)
@@ -208,7 +217,7 @@ class MarkdownPagesManager
         $parents = $pages->groupBy('parent');
 
         // Get children for said parent. If none are found, we'll use an empty collection
-        $children = $parents->get($parentSlug, function() {
+        $children = $parents->get($parentSlug, function () {
             return collect([]);
         });
 
@@ -220,25 +229,29 @@ class MarkdownPagesManager
         // Return the children, with the top level slug as a key
         return $children->keyBy(function ($page) {
             $parts = explode('/', $page->slug);
+
             return array_pop($parts);
         });
     }
 
     /**
-     *    Return the parent of a given page slug
+     *    Return the parent of a given page slug.
      *
      *    @param  string $slug The item slug
+     *
      *    @return string The item parent slug
      */
     protected function getParentSlug($slug)
     {
         $fragments = explode('/', $slug);
         array_pop($fragments);
+
         return implode('/', $fragments);
     }
 
     /**
-     *    Return the ressouce locator
+     *    Return the ressouce locator.
+     *
      *    @return \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator
      */
     protected function getLocator()
@@ -247,7 +260,8 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Return the router service
+     *    Return the router service.
+     *
      *    @return \UserFrosting\Sprinkle\Core\Router
      */
     protected function getRouter()
@@ -256,9 +270,10 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Convert a relative path to the url slug
+     *    Convert a relative path to the url slug.
      *
      *    @param  string $relativePath The relative path
+     *
      *    @return string The slug
      */
     protected function pathToSlug($relativePath)
@@ -277,8 +292,10 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Return all pages inside a given directory
+     *    Return all pages inside a given directory.
+     *
      *    @param  string $directory The absolute path to a directory
+     *
      *    @return array
      */
     protected function getPagesFromDirectory($directory)

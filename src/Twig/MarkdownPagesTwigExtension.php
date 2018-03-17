@@ -1,17 +1,19 @@
 <?php
-/**
-*    UF MarkdownPages
-*
-*    @author Louis Charette
-*    @copyright Copyright (c) 2018 Louis Charette
-*    @link      https://github.com/lcharette/UF_MarkdownPages
-*    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
-*/
+
+/*
+ * UF MarkdownPages
+ *
+ * @author    Louis Charette
+ * @copyright Copyright (c) 2018 Louis Charette
+ * @link      https://github.com/lcharette/UF_MarkdownPages
+ * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
+ */
+
 namespace UserFrosting\Sprinkle\MarkdownPages\Twig;
 
 use Interop\Container\ContainerInterface;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPagesManager;
 use Twig_Extension;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPagesManager;
 
 /**
  * MarkdownPagesTwigExtension class.
@@ -45,7 +47,7 @@ class MarkdownPagesTwigExtension extends Twig_Extension
     }
 
     /**
-     * Adds Twig global variables
+     * Adds Twig global variables.
      *
      * @return array[mixed]
      */
@@ -55,7 +57,7 @@ class MarkdownPagesTwigExtension extends Twig_Extension
         $manager = new MarkdownPagesManager($this->ci);
 
         return [
-            'markdownPagesTree' => $manager->getTree()
+            'markdownPagesTree' => $manager->getTree(),
         ];
     }
 }

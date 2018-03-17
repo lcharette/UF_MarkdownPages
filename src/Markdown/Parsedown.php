@@ -1,12 +1,14 @@
 <?php
-/**
-*    UF MarkdownPages
-*
-*    @author Louis Charette
-*    @copyright Copyright (c) 2018 Louis Charette
-*    @link      https://github.com/lcharette/UF_MarkdownPages
-*    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
-*/
+
+/*
+ * UF MarkdownPages
+ *
+ * @author    Louis Charette
+ * @copyright Copyright (c) 2018 Louis Charette
+ * @link      https://github.com/lcharette/UF_MarkdownPages
+ * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
+ */
+
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 
 use Pagerange\Markdown\Parsers\YamlParser as MetaParsedown;
@@ -19,6 +21,7 @@ use Pagerange\Markdown\Parsers\YamlParser as MetaParsedown;
  *    directly to add custom elements
  *
  *    Inspired by grav
+ *
  *    @see https://github.com/getgrav/grav/
  */
 class Parsedown extends MetaParsedown
@@ -27,7 +30,7 @@ class Parsedown extends MetaParsedown
     public $continuable_blocks = [];
 
     /**
-     * Be able to define a new Block type or override an existing one
+     * Be able to define a new Block type or override an existing one.
      *
      * @param $type
      * @param $tag
@@ -57,7 +60,7 @@ class Parsedown extends MetaParsedown
     }
 
     /**
-     * Be able to define a new Inline type or override an existing one
+     * Be able to define a new Inline type or override an existing one.
      *
      * @param $type
      * @param $tag
@@ -65,7 +68,7 @@ class Parsedown extends MetaParsedown
     public function addInlineType($type, $tag, $index = null)
     {
         if (!isset($index) || !isset($this->InlineTypes[$type])) {
-            $this->InlineTypes[$type] [] = $tag;
+            $this->InlineTypes[$type][] = $tag;
         } else {
             array_splice($this->InlineTypes[$type], $index, 0, [$tag]);
         }
@@ -76,7 +79,7 @@ class Parsedown extends MetaParsedown
     }
 
     /**
-     * Overrides the default behavior to allow for plugin-provided blocks to be continuable
+     * Overrides the default behavior to allow for plugin-provided blocks to be continuable.
      *
      * @param $Type
      *
@@ -84,13 +87,13 @@ class Parsedown extends MetaParsedown
      */
     protected function isBlockContinuable($Type)
     {
-        $continuable = in_array($Type, $this->continuable_blocks) || method_exists($this, 'block' . $Type . 'Continue');
+        $continuable = in_array($Type, $this->continuable_blocks) || method_exists($this, 'block'.$Type.'Continue');
 
         return $continuable;
     }
 
     /**
-     *  Overrides the default behavior to allow for plugin-provided blocks to be completable
+     *  Overrides the default behavior to allow for plugin-provided blocks to be completable.
      *
      * @param $Type
      *
@@ -98,7 +101,7 @@ class Parsedown extends MetaParsedown
      */
     protected function isBlockCompletable($Type)
     {
-        $completable = in_array($Type, $this->completable_blocks) || method_exists($this, 'block' . $Type . 'Complete');
+        $completable = in_array($Type, $this->completable_blocks) || method_exists($this, 'block'.$Type.'Complete');
 
         return $completable;
     }
@@ -111,7 +114,5 @@ class Parsedown extends MetaParsedown
 
             return call_user_func_array($func, $args);
         }
-
-        return null;
     }
 }

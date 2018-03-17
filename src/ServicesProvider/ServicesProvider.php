@@ -1,18 +1,20 @@
 <?php
-/**
-*    UF MarkdownPages
-*
-*    @author Louis Charette
-*    @copyright Copyright (c) 2018 Louis Charette
-*    @link      https://github.com/lcharette/UF_MarkdownPages
-*    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
-*/
+
+/*
+ * UF MarkdownPages
+ *
+ * @author    Louis Charette
+ * @copyright Copyright (c) 2018 Louis Charette
+ * @link      https://github.com/lcharette/UF_MarkdownPages
+ * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
+ */
+
 namespace UserFrosting\Sprinkle\MarkdownPages\ServicesProvider;
 
 use Interop\Container\ContainerInterface;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parsedown;
 use RocketTheme\Toolbox\Event\Event;
 use RocketTheme\Toolbox\Event\EventDispatcher;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parsedown;
 use UserFrosting\Sprinkle\MarkdownPages\Twig\MarkdownPagesTwigExtension;
 
 /**
@@ -26,7 +28,7 @@ class ServicesProvider
      */
     public function register(ContainerInterface $container)
     {
-        /**
+        /*
          *    Creates the markdown parser service
          */
         $container['markdown'] = function ($c) {
@@ -43,7 +45,7 @@ class ServicesProvider
             return $markdown;
         };
 
-        /**
+        /*
          *    Extends the 'locator' service with custom streams
          *    Custom stream added: pages://
          */
@@ -55,7 +57,7 @@ class ServicesProvider
             return $app['streamBuilder'];
         });*/
 
-        /**
+        /*
          *    Extends the 'view' service with the MarkdownPagesTwigExtension for Twig.
          *    Adds `markdownPagesTree` functions to Twig.
          */
