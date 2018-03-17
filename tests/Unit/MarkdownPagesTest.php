@@ -1,26 +1,29 @@
 <?php
 /**
-*    UF MarkdownPages
-*
-*    @author Louis Charette
-*    @copyright Copyright (c) 2018 Louis Charette
-*    @link      https://github.com/lcharette/UF_MarkdownPages
-*    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
-*/
+ *    UF MarkdownPages.
+ *
+ *    @author Louis Charette
+ *    @copyright Copyright (c) 2018 Louis Charette
+ *
+ *    @link      https://github.com/lcharette/UF_MarkdownPages
+ *
+ *    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
+ */
+
 namespace UserFrosting\Tests\Unit;
 
-use Mockery as m;
-use InvalidArgumentException;
-use Pagerange\Markdown\MetaParsedown;
 use Illuminate\Support\Collection;
-use UserFrosting\Tests\TestCase;
+use InvalidArgumentException;
+use Mockery as m;
+use Pagerange\Markdown\MetaParsedown;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPage;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPageInterface;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPagesManager;
 use UserFrosting\Support\Exception\FileNotFoundException;
+use UserFrosting\Tests\TestCase;
 
 /**
- *    Tests for MarkdownPages Sprinkle
+ *    Tests for MarkdownPages Sprinkle.
  */
 class MarkdownPagesTest extends TestCase
 {
@@ -40,7 +43,7 @@ class MarkdownPagesTest extends TestCase
     protected $testPageNoMetadata = 'app/sprinkles/MarkdownPages/tests/Unit/test-noMetadata.md';
 
     /**
-     *    @inheritDoc
+     *    {@inheritdoc}
      */
     protected function setUp()
     {
@@ -55,7 +58,7 @@ class MarkdownPagesTest extends TestCase
     }
 
     /**
-     *    @inheritDoc
+     *    {@inheritdoc}
      */
     public function tearDown()
     {
@@ -63,7 +66,7 @@ class MarkdownPagesTest extends TestCase
     }
 
     /**
-     *    Make sure the instances was created successfully
+     *    Make sure the instances was created successfully.
      */
     public function testManagerInstance()
     {
@@ -74,8 +77,8 @@ class MarkdownPagesTest extends TestCase
      *    Test the custom locator
      *    TODO : Change to custom `pages://` location. This requires
      *           UserFrosting issue #853 to be fixed.
-     *    @see   https://github.com/userfrosting/UserFrosting/issues/853
      *
+     *    @see   https://github.com/userfrosting/UserFrosting/issues/853
      */
     public function testLocator()
     {
@@ -85,7 +88,7 @@ class MarkdownPagesTest extends TestCase
     }
 
     /**
-     *    Test the `getFiles` method
+     *    Test the `getFiles` method.
      */
     public function testMarkdownPagesManager_getFiles()
     {
@@ -94,7 +97,7 @@ class MarkdownPagesTest extends TestCase
     }
 
     /**
-     *    Test if the manager return the correct thing when given a full path
+     *    Test if the manager return the correct thing when given a full path.
      */
     public function testMarkdownPagesManager_getPage()
     {
@@ -111,7 +114,7 @@ class MarkdownPagesTest extends TestCase
     }
 
     /**
-     *    Test the `getPages` & `findPage` methods
+     *    Test the `getPages` & `findPage` methods.
      */
     public function testMarkdownPagesManager_getPages_findPage()
     {
@@ -133,7 +136,7 @@ class MarkdownPagesTest extends TestCase
             '02.Foo/04.Mexico/01.Mexican/01.Bar/docs.md',
             '02.Foo/04.Brazil/docs.md',
             '02.Foo/05.Italy/docs.md',
-            '02.Foo/chapter.md'
+            '02.Foo/chapter.md',
         ];
 
         // When asked for the files, the manager will return this fake list
@@ -146,8 +149,8 @@ class MarkdownPagesTest extends TestCase
         $manager->expects($this->any())
                 ->method('getPage')
                 ->will($this->returnCallback(
-                    function($param) {
-                        return new FakePageStub;
+                    function ($param) {
+                        return new FakePageStub();
                     }
                ));
 
@@ -171,7 +174,7 @@ class MarkdownPagesTest extends TestCase
             'Foo/Mexico/Mexican/Bar',
             'Foo/Brazil',
             'Foo/Italy',
-            'Foo'
+            'Foo',
         ], $pages->pluck('slug')->toArray());
 
         // Now we'll try to find a page using the previous results
@@ -194,7 +197,7 @@ class MarkdownPagesTest extends TestCase
     }
 
     /**
-     *    Test the MarkdownPage class using the test page
+     *    Test the MarkdownPage class using the test page.
      */
     public function test_MarkdownPage()
     {
@@ -207,12 +210,12 @@ class MarkdownPagesTest extends TestCase
         $this->assertEquals('Test page', $metadata['title']);
         $this->assertEquals('Test page', $page->getTitle());
         $this->assertEquals('The test page description', $metadata['description']);
-        $this->assertEquals('The test page description',  $page->getDescription());
+        $this->assertEquals('The test page description', $page->getDescription());
 
         // Get filename and path
-        $this->assertEquals('test.md',  $page->getFilename());
-        $this->assertEquals('test',  $page->getTemplate());
-        $this->assertEquals($this->testPage,  $page->getPath());
+        $this->assertEquals('test.md', $page->getFilename());
+        $this->assertEquals('test', $page->getTemplate());
+        $this->assertEquals($this->testPage, $page->getPath());
 
         // Test data
         $content = $page->getContent();
@@ -220,7 +223,7 @@ class MarkdownPagesTest extends TestCase
     }
 
     /**
-     *    Test with a second file with no metadata
+     *    Test with a second file with no metadata.
      */
     public function test_MarkdownPage_noMetadata()
     {
@@ -233,12 +236,12 @@ class MarkdownPagesTest extends TestCase
         $this->assertArrayNotHasKey('title', $metadata);
         $this->assertEquals('', $page->getTitle());
         $this->assertArrayNotHasKey('description', $metadata);
-        $this->assertEquals('',  $page->getDescription());
+        $this->assertEquals('', $page->getDescription());
 
         // Get filename and path
-        $this->assertEquals('test-noMetadata.md',  $page->getFilename());
-        $this->assertEquals('test-noMetadata',  $page->getTemplate());
-        $this->assertEquals($this->testPageNoMetadata,  $page->getPath());
+        $this->assertEquals('test-noMetadata.md', $page->getFilename());
+        $this->assertEquals('test-noMetadata', $page->getTemplate());
+        $this->assertEquals($this->testPageNoMetadata, $page->getPath());
 
         // Test data
         $content = $page->getContent();
@@ -249,15 +252,35 @@ class MarkdownPagesTest extends TestCase
 }
 
 /**
- *    Stub replacing the real MarkdownPage
+ *    Stub replacing the real MarkdownPage.
  */
 class FakePageStub implements MarkdownPageInterface
 {
-    public function getMetadata() {}
-    public function getTitle() {}
-    public function getDescription() {}
-    public function getFilename() {}
-    public function getTemplate() {}
-    public function getPath() {}
-    public function getContent() {}
+    public function getMetadata()
+    {
+    }
+
+    public function getTitle()
+    {
+    }
+
+    public function getDescription()
+    {
+    }
+
+    public function getFilename()
+    {
+    }
+
+    public function getTemplate()
+    {
+    }
+
+    public function getPath()
+    {
+    }
+
+    public function getContent()
+    {
+    }
 }

@@ -1,22 +1,24 @@
 <?php
 /**
-*    UF MarkdownPages
-*
-*    @author Louis Charette
-*    @copyright Copyright (c) 2018 Louis Charette
-*    @link      https://github.com/lcharette/UF_MarkdownPages
-*    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
-*/
+ *    UF MarkdownPages.
+ *
+ *    @author Louis Charette
+ *    @copyright Copyright (c) 2018 Louis Charette
+ *
+ *    @link      https://github.com/lcharette/UF_MarkdownPages
+ *
+ *    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
+ */
+
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 
-use InvalidArgumentException;
 use Illuminate\Cache\Repository as Cache;
 use Illuminate\Filesystem\Filesystem;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPageInterface;
+use InvalidArgumentException;
 use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**
- *    MarkdownPage
+ *    MarkdownPage.
  *
  *    Pages are loaded from an absolute path and represent a page (file)
  *    instance. This class can't locate any pages/files from the filesystem.
@@ -52,7 +54,7 @@ class MarkdownPage implements MarkdownPageInterface
     protected $parser;
 
     /**
-     *    Constructor
+     *    Constructor.
      *
      *    @param string $path The file full path
      *    @param \Pagerange\Markdown\MetaParsedown $markdown The markdown parser
@@ -64,7 +66,7 @@ class MarkdownPage implements MarkdownPageInterface
         $this->path = $path;
 
         // Create a Filesystem instance
-        $this->filesystem = new Filesystem;
+        $this->filesystem = new Filesystem();
 
         // Create Markdown parser instance
         $this->parser = $markdown;
@@ -75,7 +77,7 @@ class MarkdownPage implements MarkdownPageInterface
 
     /**
      *    Load the file content
-     *    TODO : Cache the result
+     *    TODO : Cache the result.
      *
      *    @return void
      */
@@ -83,12 +85,13 @@ class MarkdownPage implements MarkdownPageInterface
     {
         // Make sure the page exist
         if (!$this->filesystem->exists($this->path)) {
-            throw new FileNotFoundException;
+            throw new FileNotFoundException();
         }
 
         // Make sure file is markdown
         if ($this->filesystem->extension($this->path) != 'md' || $this->filesystem->mimeType($this->path) != 'text/plain') {
             $filename = basename($this->path);
+
             throw new InvalidArgumentException("File `$filename` ({$this->filesystem->mimeType($this->path)}) doesn't seems to be a valid markdown file.");
         }
 
@@ -97,7 +100,7 @@ class MarkdownPage implements MarkdownPageInterface
     }
 
     /**
-     *    Returns the file metadata
+     *    Returns the file metadata.
      *
      *    @return array
      */
@@ -107,29 +110,32 @@ class MarkdownPage implements MarkdownPageInterface
     }
 
     /**
-     *    Returns the file title
+     *    Returns the file title.
      *
      *    @return string The file title
      */
     public function getTitle()
     {
         $metadata = $this->getMetadata();
+
         return (array_key_exists('title', $metadata)) ? $metadata['title'] : '';
     }
 
     /**
-     *    Returns the file description
+     *    Returns the file description.
      *
      *    @return string The file description
      */
     public function getDescription()
     {
         $metadata = $this->getMetadata();
+
         return (array_key_exists('description', $metadata)) ? $metadata['description'] : '';
     }
 
     /**
-     *    Returns the page filename
+     *    Returns the page filename.
+     *
      *    @return string
      */
     public function getFilename()
@@ -138,7 +144,7 @@ class MarkdownPage implements MarkdownPageInterface
     }
 
     /**
-     *    Return the page template, aka the filename without the extension
+     *    Return the page template, aka the filename without the extension.
      *
      *    @return string
      */
@@ -148,7 +154,8 @@ class MarkdownPage implements MarkdownPageInterface
     }
 
     /**
-     *    Returns the file parsed content as HTML
+     *    Returns the file parsed content as HTML.
+     *
      *    @return string The file content
      */
     public function getContent()
@@ -180,6 +187,7 @@ class MarkdownPage implements MarkdownPageInterface
     public function setCache(Cache $cache)
     {
         $this->cache = $cache;
+
         return $this;
     }
 }

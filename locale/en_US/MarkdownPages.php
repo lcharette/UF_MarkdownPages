@@ -6,7 +6,7 @@ return [
             'RED'    => 'Alert',
             'YELLOW' => 'Warning',
             'BLUE'   => 'Note',
-            'GREEN'  => ''
-        ]
-    ]
+            'GREEN'  => '',
+        ],
+    ],
 ];

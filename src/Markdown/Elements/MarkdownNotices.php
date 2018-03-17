@@ -1,12 +1,15 @@
 <?php
 /**
-*    UF MarkdownPages
-*
-*    @author Louis Charette
-*    @copyright Copyright (c) 2018 Louis Charette
-*    @link      https://github.com/lcharette/UF_MarkdownPages
-*    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
-*/
+ *    UF MarkdownPages.
+ *
+ *    @author Louis Charette
+ *    @copyright Copyright (c) 2018 Louis Charette
+ *
+ *    @link      https://github.com/lcharette/UF_MarkdownPages
+ *
+ *    @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
+ */
+
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown\Elements;
 
 use RocketTheme\Toolbox\Event\Event;
@@ -15,7 +18,8 @@ use UserFrosting\Sprinkle\Core\Facades\Translator;
 /**
  *    MarkdownNotices class.
  *    Adds the `notice` markdown Multi-Line Element
- *    Based on Grav Markdown Notices Plugin
+ *    Based on Grav Markdown Notices Plugin.
+ *
  *    @see https://github.com/getgrav/grav-plugin-markdown-notices
  */
 class MarkdownNotices
@@ -26,9 +30,10 @@ class MarkdownNotices
     protected $level_classes = ['yellow', 'red', 'blue', 'green'];
 
     /**
-     *    Register onMarkdownInitialized event
+     *    Register onMarkdownInitialized event.
      *
      *    @param  Event $event
+     *
      *    @return void
      */
     public function onMarkdownInitialized(Event $event)
@@ -37,15 +42,12 @@ class MarkdownNotices
 
         $markdown->addBlockType('!', 'Notices', true, false);
 
-        $markdown->blockNotices = function($line) {
-
-            if (preg_match('/^(!{1,'.count($this->level_classes).'})[ ]+(.*)/', $line['text'], $matches))
-            {
+        $markdown->blockNotices = function ($line) {
+            if (preg_match('/^(!{1,'.count($this->level_classes).'})[ ]+(.*)/', $line['text'], $matches)) {
                 $level = strlen($matches[1]) - 1;
 
                 // if we have more levels than we support
-                if ($level > count($this->level_classes)-1)
-                {
+                if ($level > count($this->level_classes) - 1) {
                     return;
                 }
 
@@ -53,11 +55,11 @@ class MarkdownNotices
 
                 return [
                     'element' => [
-                        'name' => 'div',
-                        'handler' => 'lines',
+                        'name'       => 'div',
+                        'handler'    => 'lines',
                         'attributes' => [
-                            'class' => 'notices '. $this->level_classes[$level],
-                            'data-label' => $this->getNoticeLabel($level)
+                            'class'      => 'notices '.$this->level_classes[$level],
+                            'data-label' => $this->getNoticeLabel($level),
                         ],
                         'text' => (array) $text,
                     ],
@@ -65,14 +67,12 @@ class MarkdownNotices
             }
         };
 
-        $markdown->blockNoticesContinue = function($line, array $block) {
-            if (isset($block['interrupted']))
-            {
+        $markdown->blockNoticesContinue = function ($line, array $block) {
+            if (isset($block['interrupted'])) {
                 return;
             }
 
-            if ($line['text'][0] === '!' and preg_match('/^(!{1,'.count($this->level_classes).'})(.*)/', $line['text'], $matches))
-            {
+            if ($line['text'][0] === '!' and preg_match('/^(!{1,'.count($this->level_classes).'})(.*)/', $line['text'], $matches)) {
                 $block['element']['text'][] = ltrim($matches[2]);
 
                 return $block;
@@ -81,14 +81,16 @@ class MarkdownNotices
     }
 
     /**
-     *    Return the localized label for a notice
+     *    Return the localized label for a notice.
      *
      *    @param  int $level The notice level
+     *
      *    @return string The localized label
      */
     protected function getNoticeLabel($level)
     {
         $class = $this->level_classes[$level];
-        return Translator::translate("MARKDOWNPAGES.NOTICES." . strtoupper($class));
+
+        return Translator::translate('MARKDOWNPAGES.NOTICES.'.strtoupper($class));
     }
 }
