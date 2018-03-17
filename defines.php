@@ -1,4 +1,12 @@
 <?php
 
-// Access control
+/*
+ * UF MarkdownPages
+ *
+ * @author    Louis Charette
+ * @copyright Copyright (c) 2018 Louis Charette
+ * @link      https://github.com/lcharette/UF_MarkdownPages
+ * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
+ */
+
 defined("MarkdownPages\PAGES_PATH") or define("MarkdownPages\PAGES_PATH", 'pages');
