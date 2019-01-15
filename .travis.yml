@@ -39,7 +39,7 @@ before_script:
   - php bakery migrate
 
 script:
-  - app/vendor/bin/phpunit -c app/sprinkles/FormGenerator/phpunit.xml --coverage-clover=app/sprinkles/MarkdownPages/coverage.xml
+  - app/vendor/bin/phpunit -c app/sprinkles/MarkdownPages/phpunit.xml --coverage-clover=app/sprinkles/MarkdownPages/coverage.xml
 
 after_failure:
   - cat app/log/userfrosting.log

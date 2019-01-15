@@ -1,6 +1,8 @@
 # Markdown Pages Sprinkle for [UserFrosting 4](https://www.userfrosting.com)
 
 [![UserFrosting Version](https://img.shields.io/badge/UserFrosting->=%204.1.16-brightgreen.svg)](https://github.com/userfrosting/UserFrosting)
+[![Latest Version](https://img.shields.io/github/release/lcharette/UF_MarkdownPages.svg)](https://github.com/lcharette/UF_MarkdownPages/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 [![Build Status](https://travis-ci.org/lcharette/UF_MarkdownPages.svg?branch=master)](https://travis-ci.org/lcharette/UF_MarkdownPages)
 [![StyleCI](https://styleci.io/repos/121700467/shield?branch=master)](https://styleci.io/repos/121700467)
 [![codecov](https://codecov.io/gh/lcharette/UF_MarkdownPages/branch/master/graph/badge.svg)](https://codecov.io/gh/lcharette/UF_MarkdownPages)
