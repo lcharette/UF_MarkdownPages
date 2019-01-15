@@ -9,7 +9,7 @@
  * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
  */
 
-namespace UserFrosting\Tests\Unit;
+namespace UserFrosting\Sprinkle\MarkdownPages\Tests\Unit;
 
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
