@@ -1,6 +1,10 @@
 # Markdown Pages Sprinkle for [UserFrosting 4](https://www.userfrosting.com)
-[![Build Status](https://travis-ci.org/lcharette/UF_MarkdownPages.svg?branch=master)](https://travis-ci.org/lcharette/UF_MarkdownPages) [![StyleCI](https://styleci.io/repos/121700467/shield?branch=master)](https://styleci.io/repos/121700467) [![UserFrosting Version](https://img.shields.io/badge/UserFrosting->=%204.1.16-brightgreen.svg)](https://github.com/userfrosting/UserFrosting) [![Donate](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-brightgreen.svg)](https://ko-fi.com/A7052ICP)
 
+[![UserFrosting Version](https://img.shields.io/badge/UserFrosting->=%204.1.16-brightgreen.svg)](https://github.com/userfrosting/UserFrosting)
+[![Build Status](https://travis-ci.org/lcharette/UF_MarkdownPages.svg?branch=master)](https://travis-ci.org/lcharette/UF_MarkdownPages)
+[![StyleCI](https://styleci.io/repos/121700467/shield?branch=master)](https://styleci.io/repos/121700467)
+[![codecov](https://codecov.io/gh/lcharette/UF_MarkdownPages/branch/master/graph/badge.svg)](https://codecov.io/gh/lcharette/UF_MarkdownPages)
+[![Donate](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-blue.svg)](https://ko-fi.com/A7052ICP)
 
 Simple flat-file page manager for UserFrosting 4. Drop any markdown file in your sprinkle and access them directly inside your UserFrosting installation. Support custom templates and sprinkle priority. It's just like a mini [Grav](https://getgrav.org) site, directly inside UserFrosting.
 
