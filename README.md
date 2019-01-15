@@ -1,10 +1,18 @@
 # Markdown Pages Sprinkle for [UserFrosting 4](https://www.userfrosting.com)
-[![Build Status](https://travis-ci.org/lcharette/UF_MarkdownPages.svg?branch=master)](https://travis-ci.org/lcharette/UF_MarkdownPages) [![StyleCI](https://styleci.io/repos/121700467/shield?branch=master)](https://styleci.io/repos/121700467) [![UserFrosting Version](https://img.shields.io/badge/UserFrosting->=%204.1.16-brightgreen.svg)](https://github.com/userfrosting/UserFrosting) [![Donate](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-brightgreen.svg)](https://ko-fi.com/A7052ICP)
 
+[![Latest Version](https://img.shields.io/github/release/lcharette/UF_MarkdownPages.svg)](https://github.com/lcharette/UF_MarkdownPages/releases)
+[![UserFrosting Version](https://img.shields.io/badge/UserFrosting->=%204.1.16-brightgreen.svg)](https://github.com/userfrosting/UserFrosting)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
+[![Donate](https://img.shields.io/badge/Donate-Buy%20Me%20a%20Coffee-blue.svg)](https://ko-fi.com/A7052ICP)
 
 Simple flat-file page manager for UserFrosting 4. Drop any markdown file in your sprinkle and access them directly inside your UserFrosting installation. Support custom templates and sprinkle priority. It's just like a mini [Grav](https://getgrav.org) site, directly inside UserFrosting.
 
-> This sprinkles requires UserFrosting 4.1 or newer
+**This sprinkles requires UserFrosting 4.1 or newer**
+
+| Branch | Status |
+| ------ | ------ |
+| master | [![Build Status](https://travis-ci.org/lcharette/UF_MarkdownPages.svg?branch=master)](https://travis-ci.org/lcharette/UF_MarkdownPages)  [![StyleCI](https://styleci.io/repos/121700467/shield?branch=master&style=flat)](https://styleci.io/repos/121700467)  [![codecov](https://codecov.io/gh/lcharette/UF_MarkdownPages/branch/master/graph/badge.svg)](https://codecov.io/gh/lcharette/UF_MarkdownPages)
+| develop | [![Build Status](https://travis-ci.org/lcharette/UF_MarkdownPages.svg?branch=develop)](https://travis-ci.org/lcharette/UF_MarkdownPages)  [![StyleCI](https://styleci.io/repos/121700467/shield?branch=develop&style=flat)](https://styleci.io/repos/121700467) [![codecov](https://codecov.io/gh/lcharette/UF_MarkdownPages/branch/develop/graph/badge.svg)](https://codecov.io/gh/lcharette/UF_MarkdownPages)
 
 # Help and Contributing
 
