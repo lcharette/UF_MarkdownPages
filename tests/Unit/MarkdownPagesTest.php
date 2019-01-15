@@ -1,12 +1,11 @@
 <?php
-
-/*
- * UF MarkdownPages
+/**
+ * UF MarkdownPages Sprinkle
  *
  * @author    Louis Charette
  * @copyright Copyright (c) 2018 Louis Charette
  * @link      https://github.com/lcharette/UF_MarkdownPages
- * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/licenses.md (MIT License)
+ * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/LICENSE.md (MIT License)
  */
 
 namespace UserFrosting\Sprinkle\MarkdownPages\Tests\Unit;
