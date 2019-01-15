@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * UF MarkdownPages Sprinkle
  *
  * @author    Louis Charette
@@ -7,6 +8,7 @@
  * @link      https://github.com/lcharette/UF_MarkdownPages
  * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/LICENSE.md (MIT License)
  */
+
 use UserFrosting\Sprinkle\MarkdownPages\Controller\MarkdownPagesController;
 
 $config = $app->getContainer()->get('config');

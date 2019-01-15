@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * UF MarkdownPages Sprinkle
  *
  * @author    Louis Charette

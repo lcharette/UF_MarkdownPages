@@ -96,9 +96,7 @@ $rules = [
     'whitespace_after_comma_in_array'             => true,
 
     'header_comment' => [
-        'header'       => $header,
-        'separate'     => 'bottom',
-        'comment_type' => 'PHPDoc',
+        'header'       => $header
     ]
 ];
 
