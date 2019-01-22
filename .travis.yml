@@ -33,8 +33,8 @@ before_install:
   # move and add sprinkle
   - mv ../UF_MarkdownPages app/sprinkles/MarkdownPages/
   - echo "{\"base\":[\"core\",\"account\",\"admin\",\"MarkdownPages\"]}" > app/sprinkles.json
-  # set up db
-  - bash ./app/sprinkles/MarkdownPages/.travis/before_install.sh $DB
+  # set up db using UF scripts
+  - bash .travis/before_install.sh $DB
 
 before_script:
   - composer install
@@ -47,4 +47,5 @@ after_failure:
   - cat app/log/userfrosting.log
 
 after_success:
+    - cd app/sprinkles/MarkdownPages/
     - bash <(curl -s https://codecov.io/bash)
