@@ -34,7 +34,7 @@ before_install:
   - mv ../UF_MarkdownPages app/sprinkles/MarkdownPages/
   - echo "{\"base\":[\"core\",\"account\",\"admin\",\"MarkdownPages\"]}" > app/sprinkles.json
   # set up db using UF scripts
-  - bash .travis/before_install.sh $DB
+  - bash build/before_install.sh $DB
 
 before_script:
   - composer install
