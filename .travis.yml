@@ -14,6 +14,8 @@ php:
   - 7.3
 
 env:
+  global:
+    - UF_BRANCH=develop
   matrix:
     - DB=mysql
     - DB=sqlite
@@ -26,7 +28,7 @@ cache:
 before_install:
   # clone UserFrosting
   - cd ../
-  - git clone https://github.com/userfrosting/UserFrosting.git
+  - git clone https://github.com/userfrosting/UserFrosting.git -b $UF_BRANCH
   - cd UserFrosting
   # move and add sprinkle
   - mv ../UF_MarkdownPages app/sprinkles/MarkdownPages/
@@ -46,4 +48,3 @@ after_failure:
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
-    
