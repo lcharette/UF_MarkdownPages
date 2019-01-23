@@ -24,7 +24,9 @@ env:
 
 matrix:
   allow_failures:
-    - UF_BRANCH=dev-develop
+    - DB=mysql UF_BRANCH=dev-develop
+    - DB=sqlite UF_BRANCH=dev-develop
+    - DB=pgsql UF_BRANCH=dev-develop
 
 cache:
   directories:
@@ -40,13 +42,16 @@ before_install:
   - echo "{\"base\":[\"core\",\"account\",\"admin\",\"MarkdownPages\"]}" > app/sprinkles.json
   # set up db using UF scripts
   - bash build/before_install.sh $DB
+  # update node
+  - nvm install 10.12.0
 
 before_script:
   - composer install
+  - php bakery debug
+  - php bakery build-assets
   - php bakery migrate
 
 script:
-  # - php bakery test MarkdownPages #<-- Require UF 4.2
   # Test only sprinkle for coverage, then test the whole UF Stack, to make sure sprinkle doesn't break UF
   - app/vendor/bin/phpunit -c app/sprinkles/MarkdownPages/phpunit.xml --coverage-clover=app/sprinkles/MarkdownPages/coverage.xml
   - app/vendor/bin/phpunit
