@@ -48,8 +48,8 @@ before_script:
 script:
   # - php bakery test MarkdownPages #<-- Require UF 4.2
   # Test only sprinkle for coverage, then test the whole UF Stack, to make sure sprinkle doesn't break UF
-  app/vendor/bin/phpunit -c app/sprinkles/MarkdownPages/phpunit.xml --coverage-clover=app/sprinkles/MarkdownPages/coverage.xml
-  app/vendor/bin/phpunit
+  - app/vendor/bin/phpunit -c app/sprinkles/MarkdownPages/phpunit.xml --coverage-clover=app/sprinkles/MarkdownPages/coverage.xml
+  - app/vendor/bin/phpunit
 
 after_failure:
   - cat app/log/userfrosting.log
