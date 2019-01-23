@@ -29,7 +29,7 @@ cache:
 before_install:
   # clone UserFrosting
   - cd ../
-  - composer create-project userfrosting/userfrosting userfrosting $UF_BRANCH --no-install
+  - composer create-project userfrosting/userfrosting UserFrosting $UF_BRANCH --no-install
   - cd UserFrosting
   # move and add sprinkle
   - mv ../UF_MarkdownPages app/sprinkles/MarkdownPages/
