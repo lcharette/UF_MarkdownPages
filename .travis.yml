@@ -14,12 +14,13 @@ php:
   - 7.3
 
 env:
-  global:
-    - UF_BRANCH=develop
   matrix:
-    - DB=mysql
-    - DB=sqlite
-    - DB=pgsql
+    - DB=mysql UF_BRANCH=dev-develop
+    - DB=sqlite UF_BRANCH=dev-develop
+    - DB=pgsql UF_BRANCH=dev-develop
+    - DB=mysql UF_BRANCH=4.1.*
+    - DB=sqlite UF_BRANCH=4.1.*
+    - DB=pgsql UF_BRANCH=4.1.*
 
 cache:
   directories:
@@ -28,7 +29,7 @@ cache:
 before_install:
   # clone UserFrosting
   - cd ../
-  - git clone https://github.com/userfrosting/UserFrosting.git -b $UF_BRANCH
+  - composer create-project userfrosting/userfrosting userfrosting $UF_BRANCH --no-install
   - cd UserFrosting
   # move and add sprinkle
   - mv ../UF_MarkdownPages app/sprinkles/MarkdownPages/
@@ -41,11 +42,12 @@ before_script:
   - php bakery migrate
 
 script:
-  - php bakery test MarkdownPages
+  # - php bakery test MarkdownPages #<-- Require UF 4.2
+  app/vendor/bin/phpunit -c app/sprinkles/MarkdownPages/phpunit.xml --coverage-clover=app/sprinkles/MarkdownPages/coverage.xml
 
 after_failure:
   - cat app/log/userfrosting.log
 
 after_success:
-    - cd app/sprinkles/MarkdownPages/
-    - bash <(curl -s https://codecov.io/bash)
+  - cd app/sprinkles/MarkdownPages/
+  - bash <(curl -s https://codecov.io/bash)
