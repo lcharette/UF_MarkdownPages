@@ -34,12 +34,12 @@ class MarkdownPagesTest extends TestCase
     /**
      *    @var string The test page relative path
      */
-    protected $testPage = 'app/sprinkles/MarkdownPages/tests/Unit/test.md';
+    protected $testPage = __DIR__ . '/test.md';
 
     /**
      *    @var string The no metadata test page relative path
      */
-    protected $testPageNoMetadata = 'app/sprinkles/MarkdownPages/tests/Unit/test-noMetadata.md';
+    protected $testPageNoMetadata = __DIR__ . '/test-noMetadata.md';
 
     /**
      *    {@inheritdoc}
