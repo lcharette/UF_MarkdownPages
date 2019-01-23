@@ -15,9 +15,18 @@ php:
 
 env:
   matrix:
-    - DB=mysql
-    - DB=sqlite
-    - DB=pgsql
+    - DB=mysql UF_BRANCH=4.1.*
+    - DB=sqlite UF_BRANCH=4.1.*
+    - DB=pgsql UF_BRANCH=4.1.*
+    - DB=mysql UF_BRANCH=dev-develop
+    - DB=sqlite UF_BRANCH=dev-develop
+    - DB=pgsql UF_BRANCH=dev-develop
+
+matrix:
+  allow_failures:
+    - DB=mysql UF_BRANCH=dev-develop
+    - DB=sqlite UF_BRANCH=dev-develop
+    - DB=pgsql UF_BRANCH=dev-develop
 
 cache:
   directories:
@@ -26,24 +35,30 @@ cache:
 before_install:
   # clone UserFrosting
   - cd ../
-  - git clone https://github.com/userfrosting/UserFrosting.git
+  - composer create-project userfrosting/userfrosting UserFrosting $UF_BRANCH --no-install
   - cd UserFrosting
   # move and add sprinkle
   - mv ../UF_MarkdownPages app/sprinkles/MarkdownPages/
   - echo "{\"base\":[\"core\",\"account\",\"admin\",\"MarkdownPages\"]}" > app/sprinkles.json
-  # set up db
-  - bash ./app/sprinkles/MarkdownPages/.travis/before_install.sh $DB
+  # set up db using UF scripts
+  - bash build/before_install.sh $DB
+  # update node
+  - nvm install 10.12.0
 
 before_script:
   - composer install
+  - php bakery debug
+  - php bakery build-assets
   - php bakery migrate
 
 script:
+  # Test only sprinkle for coverage, then test the whole UF Stack, to make sure sprinkle doesn't break UF
   - app/vendor/bin/phpunit -c app/sprinkles/MarkdownPages/phpunit.xml --coverage-clover=app/sprinkles/MarkdownPages/coverage.xml
+  - app/vendor/bin/phpunit
 
 after_failure:
   - cat app/log/userfrosting.log
 
 after_success:
-    - cd app/sprinkles/MarkdownPages/
-    - bash <(curl -s https://codecov.io/bash)
+  - cd app/sprinkles/MarkdownPages/
+  - bash <(curl -s https://codecov.io/bash)
