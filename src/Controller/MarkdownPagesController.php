@@ -80,8 +80,8 @@ class MarkdownPagesController extends SimpleController
 
         // Render the page
         $this->ci->view->render($response, "markdownPages/$template.html.twig", [
-           'content'    => $file->getContent(),
-           'metadata'   => $metadata,
+            'content'    => $file->getContent(),
+            'metadata'   => $metadata,
         ]);
     }
 
