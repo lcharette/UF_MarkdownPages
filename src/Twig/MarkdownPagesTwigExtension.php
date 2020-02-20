@@ -11,7 +11,7 @@
 
 namespace UserFrosting\Sprinkle\MarkdownPages\Twig;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Twig_Extension;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPagesManager;
 

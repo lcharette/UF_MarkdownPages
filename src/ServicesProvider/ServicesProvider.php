@@ -11,7 +11,7 @@
 
 namespace UserFrosting\Sprinkle\MarkdownPages\ServicesProvider;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use RocketTheme\Toolbox\Event\Event;
 use RocketTheme\Toolbox\Event\EventDispatcher;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parsedown;

@@ -13,7 +13,7 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use UserFrosting\Support\Exception\FileNotFoundException;
 
 /**
