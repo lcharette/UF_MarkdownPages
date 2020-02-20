@@ -7,17 +7,15 @@ services:
   - postgresql
 
 php:
-  - 5.6
-  - 7
   - 7.1
   - 7.2
   - 7.3
 
 env:
   matrix:
-    - DB=mysql UF_BRANCH=4.1.*
-    - DB=sqlite UF_BRANCH=4.1.*
-    - DB=pgsql UF_BRANCH=4.1.*
+    - DB=mysql UF_BRANCH=4.3.*
+    - DB=sqlite UF_BRANCH=4.3.*
+    - DB=pgsql UF_BRANCH=4.3.*
     - DB=mysql UF_BRANCH=dev-develop
     - DB=sqlite UF_BRANCH=dev-develop
     - DB=pgsql UF_BRANCH=dev-develop
