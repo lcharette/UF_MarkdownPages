@@ -2,3 +2,4 @@
 .php_cs.cache
 _meta
 coverage.xml
+.vscode

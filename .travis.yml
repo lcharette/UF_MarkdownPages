@@ -1,30 +1,22 @@
 sudo: false
-dist: trusty
+dist: xenial
 language: php
-
-services:
-  - mysql
-  - postgresql
 
 php:
   - 7.1
   - 7.2
   - 7.3
+  - 7.4
 
 env:
   matrix:
-    - DB=mysql UF_BRANCH=4.3.*
-    - DB=sqlite UF_BRANCH=4.3.*
-    - DB=pgsql UF_BRANCH=4.3.*
-    - DB=mysql UF_BRANCH=dev-develop
-    - DB=sqlite UF_BRANCH=dev-develop
-    - DB=pgsql UF_BRANCH=dev-develop
+    - UF_BRANCH=4.3.*
+    - UF_BRANCH=4.4.*
+    - UF_BRANCH=dev-develop
 
-matrix:
+jobs:
   allow_failures:
-    - DB=mysql UF_BRANCH=dev-develop
-    - DB=sqlite UF_BRANCH=dev-develop
-    - DB=pgsql UF_BRANCH=dev-develop
+    - UF_BRANCH=dev-develop
 
 cache:
   directories:
@@ -38,21 +30,14 @@ before_install:
   # move and add sprinkle
   - mv ../UF_MarkdownPages app/sprinkles/MarkdownPages/
   - echo "{\"base\":[\"core\",\"account\",\"admin\",\"MarkdownPages\"]}" > app/sprinkles.json
-  # set up db using UF scripts
-  - bash build/before_install.sh $DB
-  # update node
-  - nvm install 10.12.0
 
 before_script:
+  # install deps and UF
   - composer install
-  - php bakery debug
-  - php bakery build-assets
-  - php bakery migrate
 
 script:
-  # Test only sprinkle for coverage, then test the whole UF Stack, to make sure sprinkle doesn't break UF
+  # run unit tests
   - app/vendor/bin/phpunit -c app/sprinkles/MarkdownPages/phpunit.xml --coverage-clover=app/sprinkles/MarkdownPages/coverage.xml
-  - app/vendor/bin/phpunit
 
 after_failure:
   - cat app/log/userfrosting.log

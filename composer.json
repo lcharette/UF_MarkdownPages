@@ -13,7 +13,7 @@
     ],
     "require": {
         "pagerange/metaparsedown": "^1.0.3",
-        "lcharette/uf_breadcrumb": "^2.0.0"
+        "lcharette/uf_breadcrumb": "^3.0.0"
     },
     "autoload": {
         "psr-4": {
