@@ -1,10 +1,10 @@
 <?php
 
 /*
- * UF MarkdownPages Sprinkle
+ * UserFrosting MarkdownPages Sprinkle
  *
  * @author    Louis Charette
- * @copyright Copyright (c) 2018 Louis Charette
+ * @copyright Copyright (c) 2020 Louis Charette
  * @link      https://github.com/lcharette/UF_MarkdownPages
  * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/LICENSE.md (MIT License)
  */
@@ -87,7 +87,7 @@ class Parsedown extends MetaParsedown
      */
     protected function isBlockContinuable($Type)
     {
-        $continuable = in_array($Type, $this->continuable_blocks) || method_exists($this, 'block'.$Type.'Continue');
+        $continuable = in_array($Type, $this->continuable_blocks) || method_exists($this, 'block' . $Type . 'Continue');
 
         return $continuable;
     }
@@ -101,7 +101,7 @@ class Parsedown extends MetaParsedown
      */
     protected function isBlockCompletable($Type)
     {
-        $completable = in_array($Type, $this->completable_blocks) || method_exists($this, 'block'.$Type.'Complete');
+        $completable = in_array($Type, $this->completable_blocks) || method_exists($this, 'block' . $Type . 'Complete');
 
         return $completable;
     }

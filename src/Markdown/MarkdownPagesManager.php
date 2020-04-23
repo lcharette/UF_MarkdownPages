@@ -1,10 +1,10 @@
 <?php
 
 /*
- * UF MarkdownPages Sprinkle
+ * UserFrosting MarkdownPages Sprinkle
  *
  * @author    Louis Charette
- * @copyright Copyright (c) 2018 Louis Charette
+ * @copyright Copyright (c) 2020 Louis Charette
  * @link      https://github.com/lcharette/UF_MarkdownPages
  * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/LICENSE.md (MIT License)
  */
@@ -133,7 +133,7 @@ class MarkdownPagesManager
         foreach ($files as $filePath) {
 
             // Get the full absolute path
-            $path = $locator->findResource('extra://pages/'.$filePath);
+            $path = $locator->findResource('extra://pages/' . $filePath);
 
             // Get the page instance
             $page = $this->getPage($path);

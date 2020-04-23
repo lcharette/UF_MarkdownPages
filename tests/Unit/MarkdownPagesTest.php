@@ -1,10 +1,10 @@
 <?php
 
 /*
- * UF MarkdownPages Sprinkle
+ * UserFrosting MarkdownPages Sprinkle
  *
  * @author    Louis Charette
- * @copyright Copyright (c) 2018 Louis Charette
+ * @copyright Copyright (c) 2020 Louis Charette
  * @link      https://github.com/lcharette/UF_MarkdownPages
  * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/LICENSE.md (MIT License)
  */
@@ -34,12 +34,12 @@ class MarkdownPagesTest extends TestCase
     /**
      *    @var string The test page relative path
      */
-    protected $testPage = __DIR__.'/test.md';
+    protected $testPage = __DIR__ . '/test.md';
 
     /**
      *    @var string The no metadata test page relative path
      */
-    protected $testPageNoMetadata = __DIR__.'/test-noMetadata.md';
+    protected $testPageNoMetadata = __DIR__ . '/test-noMetadata.md';
 
     /**
      *    {@inheritdoc}

@@ -1,10 +1,10 @@
 <?php
 
 /*
- * UF MarkdownPages Sprinkle
+ * UserFrosting MarkdownPages Sprinkle
  *
  * @author    Louis Charette
- * @copyright Copyright (c) 2018 Louis Charette
+ * @copyright Copyright (c) 2020 Louis Charette
  * @link      https://github.com/lcharette/UF_MarkdownPages
  * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/LICENSE.md (MIT License)
  */
@@ -40,7 +40,7 @@ class MarkdownNotices
         $markdown->addBlockType('!', 'Notices', true, false);
 
         $markdown->blockNotices = function ($line) {
-            if (preg_match('/^(!{1,'.count($this->level_classes).'})[ ]+(.*)/', $line['text'], $matches)) {
+            if (preg_match('/^(!{1,' . count($this->level_classes) . '})[ ]+(.*)/', $line['text'], $matches)) {
                 $level = strlen($matches[1]) - 1;
 
                 // if we have more levels than we support
@@ -55,7 +55,7 @@ class MarkdownNotices
                         'name'       => 'div',
                         'handler'    => 'lines',
                         'attributes' => [
-                            'class'      => 'notices '.$this->level_classes[$level],
+                            'class'      => 'notices ' . $this->level_classes[$level],
                             'data-label' => $this->getNoticeLabel($level),
                         ],
                         'text' => (array) $text,
@@ -69,7 +69,7 @@ class MarkdownNotices
                 return;
             }
 
-            if ($line['text'][0] === '!' and preg_match('/^(!{1,'.count($this->level_classes).'})(.*)/', $line['text'], $matches)) {
+            if ($line['text'][0] === '!' and preg_match('/^(!{1,' . count($this->level_classes) . '})(.*)/', $line['text'], $matches)) {
                 $block['element']['text'][] = ltrim($matches[2]);
 
                 return $block;
@@ -88,6 +88,6 @@ class MarkdownNotices
     {
         $class = $this->level_classes[$level];
 
-        return Translator::translate('MARKDOWNPAGES.NOTICES.'.strtoupper($class));
+        return Translator::translate('MARKDOWNPAGES.NOTICES.' . strtoupper($class));
     }
 }
