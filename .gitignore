@@ -3,3 +3,4 @@
 _meta
 coverage.xml
 .vscode
+.phpunit.result.cache

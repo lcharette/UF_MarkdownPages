@@ -44,7 +44,7 @@ class MarkdownPagesTest extends TestCase
     /**
      *    {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // Setup parent first to get access to the container
         parent::setUp();
@@ -59,7 +59,7 @@ class MarkdownPagesTest extends TestCase
     /**
      *    {@inheritdoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         m::close();
     }
@@ -83,7 +83,7 @@ class MarkdownPagesTest extends TestCase
     {
         $locator = $this->ci->locator;
         $path = $locator->findResources('extra://pages/');
-        $this->assertInternalType('array', $path);
+        $this->assertIsArray($path);
     }
 
     /**
@@ -92,7 +92,7 @@ class MarkdownPagesTest extends TestCase
     public function testMarkdownPagesManager_getFiles()
     {
         $pages = $this->manager->getFiles();
-        $this->assertInternalType('array', $pages);
+        $this->assertIsArray($pages);
     }
 
     /**
@@ -205,7 +205,7 @@ class MarkdownPagesTest extends TestCase
 
         // Test metadata
         $metadata = $page->getMetadata();
-        $this->assertInternalType('array', $metadata);
+        $this->assertIsArray($metadata);
         $this->assertEquals('Test page', $metadata['title']);
         $this->assertEquals('Test page', $page->getTitle());
         $this->assertEquals('The test page description', $metadata['description']);
@@ -218,7 +218,7 @@ class MarkdownPagesTest extends TestCase
 
         // Test data
         $content = $page->getContent();
-        $this->assertInternalType('string', $content);
+        $this->assertIsString($content);
     }
 
     /**
@@ -231,7 +231,7 @@ class MarkdownPagesTest extends TestCase
 
         // Test metadata
         $metadata = $page->getMetadata();
-        $this->assertInternalType('array', $metadata);
+        $this->assertIsArray($metadata);
         $this->assertArrayNotHasKey('title', $metadata);
         $this->assertEquals('', $page->getTitle());
         $this->assertArrayNotHasKey('description', $metadata);
@@ -244,7 +244,7 @@ class MarkdownPagesTest extends TestCase
 
         // Test data
         $content = $page->getContent();
-        $this->assertInternalType('string', $content);
+        $this->assertIsString($content);
         // Actually check the result this time
         $this->assertEquals('<p>Hello <em>World</em>!</p>', $content);
     }
