@@ -9,20 +9,20 @@
  * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
+namespace UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser;
 
 use Pagerange\Markdown\Parsers\YamlParser as MetaParsedown;
 
 /**
- *    Parsedown class.
+ * Parsedown class.
  *
- *    NOTE: The YamlParser is used directly instead of the
- *    MetaParsedown adapter since we need to access Parsedown
- *    directly to add custom elements
+ * NOTE: The YamlParser is used directly instead of the
+ * MetaParsedown adapter since we need to access Parsedown
+ * directly to add custom elements
  *
- *    Inspired by grav
+ * Inspired by grav
  *
- *    @see https://github.com/getgrav/grav/
+ * @see https://github.com/getgrav/grav/
  */
 class Parsedown extends MetaParsedown
 {

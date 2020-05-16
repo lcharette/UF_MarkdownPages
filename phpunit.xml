@@ -8,10 +8,13 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stderr="true"
-         stopOnFailure="false">
+         stopOnFailure="true">
     <testsuites>
         <testsuite name="Unit Tests">
             <directory suffix="Test.php">tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration Tests">
+            <directory suffix=".php">tests/Integration</directory>
         </testsuite>
     </testsuites>
     <filter>

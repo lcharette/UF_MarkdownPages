@@ -1,6 +1,6 @@
 # Metadata
 
-Markdown pages uses [Parsedown](https://github.com/erusev/parsedown) and [MetaParsedown](https://github.com/pagerange/metaparsedown) as the markdown parser. An example page file could look like this:
+Markdown pages uses [MetaParsedown](https://github.com/pagerange/metaparsedown) and [Parsedown](https://github.com/erusev/parsedown) as the markdown parser. An example page file could look like this:
 
 ```
 ---
