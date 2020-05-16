@@ -30,7 +30,7 @@ class MarkdownFileTest extends TestCase
         $filesystem = new Filesystem();
 
         $this->expectException(FileNotFoundException::class);
-        $page = new MarkdownFile(__DIR__ . '/pages/bar.md', $parser, $filesystem, null);
+        new MarkdownFile(__DIR__ . '/pages/bar.md', $parser, $filesystem, null);
     }
 
     public function testPageForInvalidArgumentExceptionOnExtension(): void
@@ -40,7 +40,7 @@ class MarkdownFileTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("File `bar.txt` (text/plain) doesn't seems to be a valid markdown file.");
-        $page = new MarkdownFile(__DIR__ . '/pages/bar.txt', $parser, $filesystem, null);
+        new MarkdownFile(__DIR__ . '/pages/bar.txt', $parser, $filesystem, null);
     }
 
     public function testPageForInvalidArgumentExceptionOnMimeType(): void
@@ -50,7 +50,7 @@ class MarkdownFileTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("File `image.md` (image/jpeg) doesn't seems to be a valid markdown file.");
-        $page = new MarkdownFile(__DIR__ . '/pages/image.md', $parser, $filesystem, null);
+        new MarkdownFile(__DIR__ . '/pages/image.md', $parser, $filesystem, null);
     }
 
     public function testConstructor(): MarkdownFile

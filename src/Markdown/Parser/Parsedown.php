@@ -26,16 +26,23 @@ use Pagerange\Markdown\Parsers\YamlParser as MetaParsedown;
  */
 class Parsedown extends MetaParsedown
 {
-    public $completable_blocks = [];
-    public $continuable_blocks = [];
+    /** @var array<string,callable> */
+    protected $custom_blocks = [];
+
+    /** @var array<string,callable> */
+    protected $completable_blocks = [];
+
+    /** @var array<string,callable> */
+    protected $continuable_blocks = [];
 
     /**
      * Be able to define a new Block type or override an existing one.
      *
-     * @param $type
-     * @param $tag
+     * @param string|false $type
+     * @param string       $tag
+     * @param int|null     $index
      */
-    public function addBlockType($type, $tag, $continuable = false, $completable = false, $index = null)
+    public function addBlockType($type, $tag, $index = null): void
     {
         $block = &$this->unmarkedBlockTypes;
         if ($type) {
@@ -50,22 +57,31 @@ class Parsedown extends MetaParsedown
         } else {
             array_splice($block, $index, 0, [$tag]);
         }
+    }
 
-        if ($continuable) {
-            $this->continuable_blocks[] = $tag;
-        }
-        if ($completable) {
-            $this->completable_blocks[] = $tag;
-        }
+    public function registerBlockMethod(string $type, callable $callback): void
+    {
+        $this->custom_blocks['block' . $type] = $callback;
+    }
+
+    public function registerContinuableBlockMethod(string $type, callable $callback): void
+    {
+        $this->continuable_blocks['block' . $type . 'Continue'] = $callback;
+    }
+
+    public function registerCompletableBlockMethod(string $type, callable $callback): void
+    {
+        $this->completable_blocks['block' . $type . 'Complete'] = $callback;
     }
 
     /**
      * Be able to define a new Inline type or override an existing one.
      *
-     * @param $type
-     * @param $tag
+     * @param string   $type
+     * @param string   $tag
+     * @param int|null $index
      */
-    public function addInlineType($type, $tag, $index = null)
+    public function addInlineType($type, $tag, $index = null): void
     {
         if (!isset($index) || !isset($this->InlineTypes[$type])) {
             $this->InlineTypes[$type][] = $tag;
@@ -81,13 +97,14 @@ class Parsedown extends MetaParsedown
     /**
      * Overrides the default behavior to allow for plugin-provided blocks to be continuable.
      *
-     * @param $Type
+     * @param string $type
      *
      * @return bool
      */
-    protected function isBlockContinuable($Type)
+    protected function isBlockContinuable($type)
     {
-        $continuable = in_array($Type, $this->continuable_blocks) || method_exists($this, 'block' . $Type . 'Continue');
+        $method = 'block' . $type . 'Continue';
+        $continuable = array_key_exists($method, $this->continuable_blocks) || method_exists($this, $method);
 
         return $continuable;
     }
@@ -95,22 +112,42 @@ class Parsedown extends MetaParsedown
     /**
      *  Overrides the default behavior to allow for plugin-provided blocks to be completable.
      *
-     * @param $Type
+     * @param string $type
      *
      * @return bool
      */
-    protected function isBlockCompletable($Type)
+    protected function isBlockCompletable($type)
     {
-        $completable = in_array($Type, $this->completable_blocks) || method_exists($this, 'block' . $Type . 'Complete');
+        $method = 'block' . $type . 'Complete';
+        $completable = array_key_exists($method, $this->completable_blocks) || method_exists($this, $method);
 
         return $completable;
     }
 
-    // For extending this class via plugins
-    public function __call($method, $args)
+    /**
+     * For extending this class via plugins
+     *
+     * @param string  $method
+     * @param mixed[] $args
+     *
+     * @return mixed
+     */
+    public function __call(string $method, array $args)
     {
-        if (isset($this->$method) === true) {
-            $func = $this->$method;
+        if (isset($this->custom_blocks[$method]) === true) {
+            $func = $this->custom_blocks[$method];
+
+            return call_user_func_array($func, $args);
+        }
+
+        if (isset($this->completable_blocks[$method]) === true) {
+            $func = $this->completable_blocks[$method];
+
+            return call_user_func_array($func, $args);
+        }
+
+        if (isset($this->continuable_blocks[$method]) === true) {
+            $func = $this->continuable_blocks[$method];
 
             return call_user_func_array($func, $args);
         }

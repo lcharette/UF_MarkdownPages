@@ -31,14 +31,14 @@ class MarkdownPages extends Sprinkle
     }
 
     /**
-     *    Listener for onMarkdownInitialized events
-     *    Adds custom markdown elements.
+    /**
+     * Listener for onMarkdownInitialized events.
+     * Adds custom markdown elements.
      *
-     *    @param  Event $event
+     * @param Event $event
      */
-    public function onMarkdownInitialized(Event $event)
+    public function onMarkdownInitialized(Event $event): void
     {
-        $markdownNotices = new MarkdownNotices();
-        $markdownNotices->onMarkdownInitialized($event);
+        MarkdownNotices::init($event['markdown']);
     }
 }

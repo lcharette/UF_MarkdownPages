@@ -11,40 +11,38 @@
 
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown\Elements;
 
-use RocketTheme\Toolbox\Event\Event;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Sprinkle\Core\Facades\Translator;
 
 /**
- *    MarkdownNotices class.
- *    Adds the `notice` markdown Multi-Line Element
- *    Based on Grav Markdown Notices Plugin.
+ * MarkdownNotices class.
+ * Adds the `notice` markdown Multi-Line Element
+ * Based on Grav Markdown Notices Plugin.
  *
- *    @see https://github.com/getgrav/grav-plugin-markdown-notices
+ * @see https://github.com/getgrav/grav-plugin-markdown-notices
  */
 class MarkdownNotices
 {
     /**
-     *    @var array The different level names. Also acts as css selector
+     * @var string[] The different level names. Also acts as css selector
      */
-    protected $level_classes = ['yellow', 'red', 'blue', 'green'];
+    protected static $level_classes = ['yellow', 'red', 'blue', 'green'];
 
     /**
-     *    Register onMarkdownInitialized event.
+     * Register onMarkdownInitialized event.
      *
-     *    @param  Event $event
+     * @param Parsedown $markdown
      */
-    public function onMarkdownInitialized(Event $event)
+    public static function init(Parsedown $markdown): void
     {
-        $markdown = $event['markdown'];
+        $markdown->addBlockType('!', 'Notices');
 
-        $markdown->addBlockType('!', 'Notices', true, false);
-
-        $markdown->blockNotices = function ($line) {
-            if (preg_match('/^(!{1,' . count($this->level_classes) . '})[ ]+(.*)/', $line['text'], $matches)) {
+        $markdown->registerBlockMethod('Notices', function ($line) {
+            if (preg_match('/^(!{1,' . count(self::$level_classes) . '})[ ]+(.*)/', $line['text'], $matches)) {
                 $level = strlen($matches[1]) - 1;
 
                 // if we have more levels than we support
-                if ($level > count($this->level_classes) - 1) {
+                if ($level > count(self::$level_classes) - 1) {
                     return;
                 }
 
@@ -55,38 +53,38 @@ class MarkdownNotices
                         'name'       => 'div',
                         'handler'    => 'lines',
                         'attributes' => [
-                            'class'      => 'notices ' . $this->level_classes[$level],
-                            'data-label' => $this->getNoticeLabel($level),
+                            'class'      => 'notices ' . self::$level_classes[$level],
+                            'data-label' => self::getNoticeLabel($level),
                         ],
                         'text' => (array) $text,
                     ],
                 ];
             }
-        };
+        });
 
-        $markdown->blockNoticesContinue = function ($line, array $block) {
+        $markdown->registerContinuableBlockMethod('Notices', function ($line, array $block) {
             if (isset($block['interrupted'])) {
                 return;
             }
 
-            if ($line['text'][0] === '!' and preg_match('/^(!{1,' . count($this->level_classes) . '})(.*)/', $line['text'], $matches)) {
+            if ($line['text'][0] === '!' and preg_match('/^(!{1,' . count(self::$level_classes) . '})(.*)/', $line['text'], $matches)) {
                 $block['element']['text'][] = ltrim($matches[2]);
 
                 return $block;
             }
-        };
+        });
     }
 
     /**
-     *    Return the localized label for a notice.
+     * Return the localized label for a notice.
      *
-     *    @param  int $level The notice level
+     * @param int $level The notice level
      *
-     *    @return string The localized label
+     * @return string The localized label
      */
-    protected function getNoticeLabel($level)
+    protected static function getNoticeLabel($level)
     {
-        $class = $this->level_classes[$level];
+        $class = self::$level_classes[$level];
 
         return Translator::translate('MARKDOWNPAGES.NOTICES.' . strtoupper($class));
     }
