@@ -33,6 +33,18 @@ class MarkdownNoticesTest extends TestCase
         $content = $page->getContent();
 
         $result = (string) file_get_contents(__DIR__ . '/results/notices.md');
-        $this->assertXmlStringEqualsXmlString($result, $content);
+        $this->assertSame($result, $content);
+    }
+
+    public function testTooMuchLevel(): void
+    {
+        $parser = new Parsedown();
+        MarkdownNotices::init($parser);
+
+        $page = new MarkdownFile(__DIR__ . '/pages/notices-toodeep.md', $parser, new Filesystem());
+        $content = $page->getContent();
+
+        // We don't have more than 5 level deep, so it's not picked up by the block.
+        $this->assertSame('<p>!!!!! Lorem ipsum</p>', $content);
     }
 }

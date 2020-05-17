@@ -36,43 +36,61 @@ class MarkdownNotices
     public static function init(Parsedown $markdown): void
     {
         $markdown->addBlockType('!', 'Notices');
+        $markdown->registerBlockMethod('Notices', [__CLASS__, 'blockMethod']);
+        $markdown->registerContinuableBlockMethod('Notices', [__CLASS__, 'continuableBlockMethod']);
+    }
 
-        $markdown->registerBlockMethod('Notices', function ($line) {
-            if (preg_match('/^(!{1,' . count(self::$level_classes) . '})[ ]+(.*)/', $line['text'], $matches)) {
-                $level = strlen($matches[1]) - 1;
+    /**
+     * Main block method.
+     *
+     * @param mixed[] $line
+     *
+     * @return mixed[]|null
+     */
+    public static function blockMethod($line): ?array
+    {
+        if (preg_match('/^(!{1,' . count(self::$level_classes) . '})[ ]+(.*)/', $line['text'], $matches)) {
+            $level = strlen($matches[1]) - 1;
 
-                // if we have more levels than we support
-                if ($level > count(self::$level_classes) - 1) {
-                    return;
-                }
+            $text = $matches[2];
 
-                $text = $matches[2];
-
-                return [
-                    'element' => [
-                        'name'       => 'div',
-                        'handler'    => 'lines',
-                        'attributes' => [
-                            'class'      => 'notices ' . self::$level_classes[$level],
-                            'data-label' => self::getNoticeLabel($level),
-                        ],
-                        'text' => (array) $text,
+            return [
+                'element' => [
+                    'name'       => 'div',
+                    'handler'    => 'lines',
+                    'attributes' => [
+                        'class'      => 'notices ' . self::$level_classes[$level],
+                        'data-label' => self::getNoticeLabel($level),
                     ],
-                ];
-            }
-        });
+                    'text' => (array) $text,
+                ],
+            ];
+        }
 
-        $markdown->registerContinuableBlockMethod('Notices', function ($line, array $block) {
-            if (isset($block['interrupted'])) {
-                return;
-            }
+        return null;
+    }
 
-            if ($line['text'][0] === '!' and preg_match('/^(!{1,' . count(self::$level_classes) . '})(.*)/', $line['text'], $matches)) {
-                $block['element']['text'][] = ltrim($matches[2]);
+    /**
+     * Continuable Block Method.
+     *
+     * @param mixed[] $line
+     * @param mixed[] $block
+     *
+     * @return mixed[]
+     */
+    public static function continuableBlockMethod(array $line, array $block): ?array
+    {
+        if (isset($block['interrupted'])) {
+            return null;
+        }
 
-                return $block;
-            }
-        });
+        if ($line['text'][0] === '!' and preg_match('/^(!{1,' . count(self::$level_classes) . '})(.*)/', $line['text'], $matches)) {
+            $block['element']['text'][] = ltrim($matches[2]);
+
+            return $block;
+        }
+
+        return null;
     }
 
     /**
