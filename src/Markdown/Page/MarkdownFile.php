@@ -55,8 +55,8 @@ class MarkdownFile implements PageInterface
     /**
      * Class constructor.
      *
-     * @param string     $path   The file full path
-     * @param Parsedown  $parser The markdown parser
+     * @param string    $path   The file full path
+     * @param Parsedown $parser The markdown parser
      */
     public function __construct(string $path, Parsedown $parser, Filesystem $filesystem)
     {

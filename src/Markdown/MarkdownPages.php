@@ -11,86 +11,81 @@
 
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use Psr\Container\ContainerInterface;
+use RocketTheme\Toolbox\Event\Event;
+use RocketTheme\Toolbox\Event\EventDispatcher;
 use UserFrosting\Support\Exception\FileNotFoundException;
+use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
  *   MarkdownPagesManager.
  */
-class MarkdownPagesManager
+class MarkdownPages
 {
-    /**
-     * @var ContainerInterface The DI Container
-     */
-    protected $ci;
+    /** @var string The locator scheme for the files. */
+    protected $scheme = 'markdown://';
 
     /**
-     *    @var Filesystem
+     * @var ResourceLocatorInterface
      */
-    protected $filesystem;
+    protected $locator;
 
     /**
-     *    Constructor.
+     * Class constructor.
      *
-     *    @param ContainerInterface $ci
+     * @param ResourceLocatorInterface $locator
      */
-    public function __construct(ContainerInterface $ci)
+    public function __construct(ResourceLocatorInterface $locator)
     {
-        $this->ci = $ci;
-        $this->filesystem = new Filesystem();
+        $this->locator = $locator;
     }
 
     /**
-     *    Get a list of all the files found across all active sprinkles
-     *    TODO : Cache the result.
+     * Get a list of all the files found across all active sprinkles
+     * TODO : Cache the result.
      *
-     *    @return array An array of absolute paths
+     * @return string[] An array of absolute paths
      */
-    public function getFiles()
+    public function getFiles(): array
     {
-        /** @var \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator $locator */
-        $locator = $this->getLocator();
-
-        // Get all markdown pages
-        // N.B.: Replace with custom locator url once UF issue #853 is resolve
-        // @see https://github.com/userfrosting/UserFrosting/issues/853
-        $paths = $locator->findResources('extra://pages/');
-
-        $pages = [];
-        foreach ($paths as $path) {
-            $pathPages = $this->getPagesFromDirectory($path);
-            $pages = array_merge($pathPages, $pages);
-        }
-
-        // Remove duplicates
-        $pages = array_unique($pages);
-
-        return $pages;
+        return $this->locator->listResources($this->scheme);
     }
 
     /**
-     *    Return an instance for a given page.
+     * Return an instance for a given page.
      *
-     *    @param  string $path The page path
+     * @param string $path The page path
      *
-     *    @return MarkdownPageInterface The page instance
+     * @return PageInterface The page instance
      */
     public function getPage($path)
     {
-        return new MarkdownPage($path, $this->ci->markdown, $this->ci->cache);
+        return new Page($path, $this->getParser(), $this->ci->cache);
+    }
+
+    public function getParser(): Parsedown
+    {
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = $this->ci->eventDispatcher;
+
+        // Get instance
+        $markdown = new Parsedown();
+
+        // Fire `onMarkdownInitialized` event
+        $eventDispatcher->dispatch('onMarkdownInitialized', new Event(['markdown' => $markdown]));
+
+        return $markdown;
     }
 
     /**
-     *    Finds a page in the available list by searching for the reltive path
-     *    after `pages/`.
+     * Finds a page in the available list by searching for the reltive path
+     * after `pages/`.
      *
-     *    @param  string $slug The page slug, aka the part of url after the base `pages/` path
+     * @param string $slug The page slug, aka the part of url after the base `pages/` path
      *
-     *    @throws FileNotFoundException If page is not found
+     * @throws FileNotFoundException If page is not found
      *
-     *    @return MarkdownPageInterface The page instance
+     * @return PageInterface The page instance
      */
     public function findPage($slug)
     {
@@ -108,12 +103,12 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Get a list of all the pages found across all active sprinkles.
-     *    Returns a collection of MarkdownPage to which are added some custom
-     *    public property, such as the relative path and the page url.
-     *    TODO : Cache the result.
+     * Get a list of all the pages found across all active sprinkles.
+     * Returns a collection of MarkdownPage to which are added some custom
+     * public property, such as the relative path and the page url.
+     * TODO : Cache the result.
      *
-     *    @return Collection
+     * @return Collection
      */
     public function getPages()
     {
@@ -163,11 +158,11 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Function that return the complete page tree used to create a menu.
+     * Function that return the complete page tree used to create a menu.
      *
-     *    @param  string $topLevel The top level slug (default '');
+     * @param string $topLevel The top level slug (default '');
      *
-     *    @return Collection
+     * @return Collection
      */
     public function getTree($topLevel = '')
     {
@@ -182,11 +177,11 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Set breadcrumbs recursively for the specified page and it's parent.
+     * Set breadcrumbs recursively for the specified page and it's parent.
      *
-     *    @param MarkdownPageInterface $page
+     * @param PageInterface $page
      */
-    public function setBreadcrumbs(MarkdownPageInterface $page)
+    public function setBreadcrumbs(PageInterface $page)
     {
         // Add it to the breadcrumb
         $this->ci->breadcrumb->prepend($page->getTitle(), $page->url);
@@ -204,12 +199,12 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Function that recursively find children for a given parent slug.
+     * Function that recursively find children for a given parent slug.
      *
-     *    @param  Collection $pages A collection of pages
-     *    @param  string $parentSlug The parent slug
+     * @param Collection $pages      A collection of pages
+     * @param string     $parentSlug The parent slug
      *
-     *    @return Collection The tree of children for that given slug
+     * @return Collection The tree of children for that given slug
      */
     protected function getPagesChildren($pages, $parentSlug)
     {
@@ -235,11 +230,11 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Return the parent of a given page slug.
+     * Return the parent of a given page slug.
      *
-     *    @param  string $slug The item slug
+     * @param string $slug The item slug
      *
-     *    @return string The item parent slug
+     * @return string The item parent slug
      */
     protected function getParentSlug($slug)
     {
@@ -250,31 +245,11 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Return the ressouce locator.
+     * Convert a relative path to the url slug.
      *
-     *    @return \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator
-     */
-    protected function getLocator()
-    {
-        return $this->ci->locator;
-    }
-
-    /**
-     *    Return the router service.
+     * @param string $relativePath The relative path
      *
-     *    @return \UserFrosting\Sprinkle\Core\Router
-     */
-    protected function getRouter()
-    {
-        return $this->ci->router;
-    }
-
-    /**
-     *    Convert a relative path to the url slug.
-     *
-     *    @param  string $relativePath The relative path
-     *
-     *    @return string The slug
+     * @return string The slug
      */
     protected function pathToSlug($relativePath)
     {
@@ -292,26 +267,16 @@ class MarkdownPagesManager
     }
 
     /**
-     *    Return all pages inside a given directory.
+     * Set the value of scheme
      *
-     *    @param  string $directory The absolute path to a directory
+     * @param string $scheme
      *
-     *    @return array
+     * @return self
      */
-    protected function getPagesFromDirectory($directory)
+    public function setScheme(string $scheme)
     {
-        // If directory diesn't exist, stop
-        if (!$this->filesystem->exists($directory)) {
-            return [];
-        }
+        $this->scheme = $scheme;
 
-        // Get pages
-        $pages = $this->filesystem->allFiles($directory);
-
-        $pages = array_map(function ($page) {
-            return $page->getRelativePathname();
-        }, $pages);
-
-        return $pages;
+        return $this;
     }
 }
