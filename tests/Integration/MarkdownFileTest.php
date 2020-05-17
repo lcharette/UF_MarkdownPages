@@ -30,7 +30,7 @@ class MarkdownFileTest extends TestCase
         $filesystem = new Filesystem();
 
         $this->expectException(FileNotFoundException::class);
-        new MarkdownFile(__DIR__ . '/pages/bar.md', $parser, $filesystem, null);
+        new MarkdownFile(__DIR__ . '/pages/bar.md', $parser, $filesystem);
     }
 
     public function testPageForInvalidArgumentExceptionOnExtension(): void
@@ -40,7 +40,7 @@ class MarkdownFileTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("File `bar.txt` (text/plain) doesn't seems to be a valid markdown file.");
-        new MarkdownFile(__DIR__ . '/pages/bar.txt', $parser, $filesystem, null);
+        new MarkdownFile(__DIR__ . '/pages/bar.txt', $parser, $filesystem);
     }
 
     public function testPageForInvalidArgumentExceptionOnMimeType(): void
@@ -50,7 +50,7 @@ class MarkdownFileTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("File `image.md` (image/jpeg) doesn't seems to be a valid markdown file.");
-        new MarkdownFile(__DIR__ . '/pages/image.md', $parser, $filesystem, null);
+        new MarkdownFile(__DIR__ . '/pages/image.md', $parser, $filesystem);
     }
 
     public function testConstructor(): MarkdownFile
@@ -58,7 +58,7 @@ class MarkdownFileTest extends TestCase
         $parser = new Parsedown();
         $filesystem = new Filesystem();
 
-        $page = new MarkdownFile(__DIR__ . '/pages/test.md', $parser, $filesystem, null);
+        $page = new MarkdownFile(__DIR__ . '/pages/test.md', $parser, $filesystem);
         $this->assertInstanceOf(PageInterface::class, $page);
 
         return $page;
@@ -129,7 +129,7 @@ class MarkdownFileTest extends TestCase
         $parser = new Parsedown();
         $filesystem = new Filesystem();
 
-        $page = new MarkdownFile(__DIR__ . '/pages/test-noMetadata.md', $parser, $filesystem, null);
+        $page = new MarkdownFile(__DIR__ . '/pages/test-noMetadata.md', $parser, $filesystem);
         $this->assertSame([], $page->getMetadata());
         $this->assertSame('', $page->getTitle());
         $this->assertSame('', $page->getDescription());

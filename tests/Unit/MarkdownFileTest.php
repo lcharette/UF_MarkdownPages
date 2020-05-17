@@ -36,7 +36,7 @@ class MarkdownFileTest extends TestCase
             ->getMock();
 
         $this->expectException(FileNotFoundException::class);
-        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem, null);
+        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem);
     }
 
     public function testPageForInvalidArgumentExceptionOnExtension(): void
@@ -51,7 +51,7 @@ class MarkdownFileTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("File `bar.txt` (text/plain) doesn't seems to be a valid markdown file.");
-        $page = new MarkdownFile('foo/bar.txt', $parser, $filesystem, null);
+        $page = new MarkdownFile('foo/bar.txt', $parser, $filesystem);
     }
 
     public function testPageForInvalidArgumentExceptionOnMimeType(): void
@@ -66,7 +66,7 @@ class MarkdownFileTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("File `bar.md` (image/jpeg) doesn't seems to be a valid markdown file.");
-        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem, null);
+        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem);
     }
 
     public function testConstructor(): void
@@ -79,7 +79,7 @@ class MarkdownFileTest extends TestCase
             ->shouldReceive('get')->with('foo/bar.md')->once()
             ->getMock();
 
-        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem, null);
+        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem);
         $this->assertInstanceOf(PageInterface::class, $page);
     }
 
@@ -101,7 +101,7 @@ class MarkdownFileTest extends TestCase
             ->shouldReceive('get')->andReturn('foo')
             ->getMock();
 
-        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem, null);
+        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem);
         $this->assertSame(['bar' => true], $page->getMetadata());
         $this->assertSame('', $page->getTitle());
         $this->assertSame('', $page->getDescription());
@@ -126,7 +126,7 @@ class MarkdownFileTest extends TestCase
             ->shouldReceive('get')->andReturn('foo')
             ->getMock();
 
-        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem, null);
+        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem);
         $this->assertSame('foo', $page->getTitle());
         $this->assertSame('bar', $page->getDescription());
     }
@@ -144,7 +144,7 @@ class MarkdownFileTest extends TestCase
             ->shouldReceive('get')->andReturn('foo')
             ->getMock();
 
-        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem, null);
+        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem);
         $this->assertSame('bar', $page->getTemplate());
         $this->assertSame('bar.md', $page->getFilename());
         $this->assertSame('foo/bar.md', $page->getPath());
@@ -168,7 +168,7 @@ class MarkdownFileTest extends TestCase
             ->shouldReceive('get')->andReturn('_foo_')
             ->getMock();
 
-        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem, null);
+        $page = new MarkdownFile('foo/bar.md', $parser, $filesystem);
         $this->assertSame('<i>Foo</i>', $page->getContent());
     }
 }

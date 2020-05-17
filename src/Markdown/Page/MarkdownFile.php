@@ -11,7 +11,6 @@
 
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown\Page;
 
-use Illuminate\Cache\Repository as Cache;
 use Illuminate\Filesystem\Filesystem;
 use InvalidArgumentException;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
@@ -28,11 +27,6 @@ use UserFrosting\Support\Exception\FileNotFoundException;
  */
 class MarkdownFile implements PageInterface
 {
-    /**
-     * @var Cache|null The cache service instance
-     */
-    protected $cache;
-
     /**
      * @var string The file path
      */
@@ -63,11 +57,9 @@ class MarkdownFile implements PageInterface
      *
      * @param string     $path   The file full path
      * @param Parsedown  $parser The markdown parser
-     * @param Cache|null $cache  The cache service
      */
-    public function __construct(string $path, Parsedown $parser, Filesystem $filesystem, ?Cache $cache = null)
+    public function __construct(string $path, Parsedown $parser, Filesystem $filesystem)
     {
-        $this->cache = $cache;
         $this->path = $path;
         $this->filesystem = $filesystem;
 
@@ -85,7 +77,7 @@ class MarkdownFile implements PageInterface
      * @throws FileNotFoundException    if file is not found;
      * @throws InvalidArgumentException if file is not plain/text or .md
      *
-     * @todo : Cache the result.
+     * @todo : Cache the result using the Cache facade.
      */
     protected function load(): void
     {
