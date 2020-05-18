@@ -27,6 +27,16 @@ interface PageInterface
     public function getMetadata(): array;
 
     /**
+     * Add a custom metadata.
+     *
+     * @param string $slug
+     * @param mixed  $value
+     *
+     * @return self
+     */
+    public function addMetadata(string $slug, $value);
+
+    /**
      * Returns the file title.
      *
      * @return string

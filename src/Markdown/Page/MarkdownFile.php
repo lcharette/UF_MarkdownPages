@@ -53,6 +53,11 @@ class MarkdownFile implements PageInterface
     protected $metadata;
 
     /**
+     * @var array<string,mixed>
+     */
+    protected $custom_metadata = [];
+
+    /**
      * Class constructor.
      *
      * @param string    $path   The file full path
@@ -106,7 +111,17 @@ class MarkdownFile implements PageInterface
             $this->metadata = $this->parser->meta($this->rawContent);
         }
 
-        return $this->metadata;
+        return array_replace_recursive($this->metadata, $this->custom_metadata);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addMetadata(string $slug, $value)
+    {
+        $this->custom_metadata[$slug] = $value;
+
+        return $this;
     }
 
     /**

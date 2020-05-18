@@ -129,6 +129,16 @@ class MarkdownFileTest extends TestCase
         $page = new MarkdownFile('foo/bar.md', $parser, $filesystem);
         $this->assertSame('foo', $page->getTitle());
         $this->assertSame('bar', $page->getDescription());
+
+        // Test addMetadata
+        $page->addMetadata('foo', 'bar');
+        $page->addMetadata('title', 'foobar');
+        $this->assertSame([
+            'title' => 'foobar',
+            'description' => 'bar',
+            'foo' => 'bar'
+        ], $page->getMetadata());
+        $this->assertSame('bar', $page->getMetadata()['foo']);
     }
 
     /**

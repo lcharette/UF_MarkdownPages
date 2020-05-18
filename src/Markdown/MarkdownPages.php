@@ -11,10 +11,13 @@
 
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use RocketTheme\Toolbox\Event\Event;
-use RocketTheme\Toolbox\Event\EventDispatcher;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Support\Exception\FileNotFoundException;
+use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
@@ -22,7 +25,9 @@ use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
  */
 class MarkdownPages
 {
-    /** @var string The locator scheme for the files. */
+    /**
+     * @var string The locator scheme for the files.
+     */
     protected $scheme = 'markdown://';
 
     /**
@@ -31,20 +36,38 @@ class MarkdownPages
     protected $locator;
 
     /**
+     * @var Parsedown
+     */
+    protected $parser;
+
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
      * Class constructor.
      *
      * @param ResourceLocatorInterface $locator
+     * @param Parsedown                $parser
+     * @param Filesystem|null          $filesystem
      */
-    public function __construct(ResourceLocatorInterface $locator)
+    public function __construct(ResourceLocatorInterface $locator, Parsedown $parser, ?Filesystem $filesystem = null)
     {
         $this->locator = $locator;
+        $this->parser = $parser;
+
+        if (is_null($filesystem)) {
+            $this->filesystem = new Filesystem();
+        } else {
+            $this->filesystem = $filesystem;
+        }
     }
 
     /**
      * Get a list of all the files found across all active sprinkles
-     * TODO : Cache the result.
      *
-     * @return string[] An array of absolute paths
+     * @return ResourceInterface[] An array of absolute paths
      */
     public function getFiles(): array
     {
@@ -56,25 +79,11 @@ class MarkdownPages
      *
      * @param string $path The page path
      *
-     * @return PageInterface The page instance
+     * @return MarkdownFile The page instance
      */
-    public function getPage($path)
+    public function getPage(string $path): MarkdownFile
     {
-        return new Page($path, $this->getParser(), $this->ci->cache);
-    }
-
-    public function getParser(): Parsedown
-    {
-        /** @var EventDispatcher $eventDispatcher */
-        $eventDispatcher = $this->ci->eventDispatcher;
-
-        // Get instance
-        $markdown = new Parsedown();
-
-        // Fire `onMarkdownInitialized` event
-        $eventDispatcher->dispatch('onMarkdownInitialized', new Event(['markdown' => $markdown]));
-
-        return $markdown;
+        return new MarkdownFile($path, $this->parser, $this->filesystem);
     }
 
     /**
@@ -112,11 +121,8 @@ class MarkdownPages
      */
     public function getPages()
     {
-        /** @var \RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator $locator */
-        $locator = $this->getLocator();
-
         /** @var \UserFrosting\Sprinkle\Core\Router $router */
-        $router = $this->getRouter();
+        // $router = $this->getRouter();
 
         // Get all the files
         $files = $this->getFiles();
@@ -125,19 +131,17 @@ class MarkdownPages
         $pages = collect();
 
         // Loop through files to populate pages
-        foreach ($files as $filePath) {
-
-            // Get the full absolute path
-            $path = $locator->findResource('extra://pages/' . $filePath);
+        foreach ($files as $file) {
 
             // Get the page instance
-            $page = $this->getPage($path);
+            $page = $this->getPage($file->getAbsolutePath());
 
             // Add the relative path
-            $page->relativePath = $filePath;
+            $page->addMetadata('relativePath', $file->getPath());
 
             // Add the slug
-            $page->slug = $this->pathToSlug($page->relativePath);
+            //$slug = $this->pathToSlug($file->getPath());
+            //$page->addMetadata('slug', $slug);
 
             // Add the url
             /*
@@ -145,10 +149,10 @@ class MarkdownPages
             * @see https://github.com/userfrosting/UserFrosting/issues/854
             */
             //$page->url = $router->pathFor('markdownPages', ['path' => $page->slug]);
-            $page->url = "/{$this->ci->config['MarkdownPages.route']}/{$page->slug}";
+            // $page->addMetadata('url', "/{$this->ci->config['MarkdownPages.route']}/{$page->slug}");
 
             // To help with the tree generation, we'll add the parent slug here
-            $page->parent = $this->getParentSlug($page->slug);
+            //$page->addMetadata('parent', $this->getParentSlug($slug));
 
             // Add page to the collection
             $pages->push($page);
@@ -196,6 +200,28 @@ class MarkdownPages
 
         // Add the parent's parent
         $this->setBreadcrumbs($parent);
+    }
+
+    /**
+     * Set the value of scheme
+     *
+     * @param string $scheme
+     *
+     * @return self
+     */
+    public function setScheme(string $scheme)
+    {
+        $this->scheme = $scheme;
+
+        return $this;
+    }
+
+    /**
+     * @return Parsedown
+     */
+    public function getParser(): Parsedown
+    {
+        return $this->parser;
     }
 
     /**
@@ -264,19 +290,5 @@ class MarkdownPages
 
         // Glue the fragments back together
         return implode('/', $dirFragments);
-    }
-
-    /**
-     * Set the value of scheme
-     *
-     * @param string $scheme
-     *
-     * @return self
-     */
-    public function setScheme(string $scheme)
-    {
-        $this->scheme = $scheme;
-
-        return $this;
     }
 }

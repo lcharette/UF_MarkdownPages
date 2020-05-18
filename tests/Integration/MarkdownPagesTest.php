@@ -11,6 +11,7 @@
 
 namespace UserFrosting\Sprinkle\MarkdownPages\Tests\Integration;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Mockery as m;
@@ -18,6 +19,8 @@ use Pagerange\Markdown\MetaParsedown;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\PageInterface;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPages;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Support\Exception\FileNotFoundException;
 use UserFrosting\Tests\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
@@ -27,31 +30,25 @@ use UserFrosting\UniformResourceLocator\ResourceLocator;
  */
 class MarkdownPagesTest extends TestCase
 {
-    /**
-     *    @var MarkdownPages
-     */
-    //protected $manager;
-
-    /**
-     *    @var string The test page relative path
-     */
-    //protected $testPage = __DIR__ . '/test.md';
-
-    /**
-     *    @var string The no metadata test page relative path
-     */
-    //protected $testPageNoMetadata = __DIR__ . '/test-noMetadata.md';
-
     public function testConstructor(): MarkdownPages
     {
         $locator = new ResourceLocator(__DIR__);
         $locator->registerStream('markdown');
         $locator->registerLocation('pages');
 
-        $pages = new MarkdownPages($locator);
+        $parser = new Parsedown();
+        $filesystem = new Filesystem();
+
+        $pages = new MarkdownPages($locator, $parser, $filesystem);
         $this->assertInstanceOf(MarkdownPages::class, $pages);
+        $this->assertSame($parser, $pages->getParser());
 
         return $pages;
+    }
+
+    public function testServcice(): void
+    {
+        $this->assertInstanceOf(MarkdownPages::class, $this->ci->markdownPages);
     }
 
     /**
@@ -67,6 +64,31 @@ class MarkdownPagesTest extends TestCase
 
         $files = $pages->getFiles();
         $this->assertEquals($expectedFiles, $files);
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testgetPage(MarkdownPages $pages): void
+    {
+        $page = $pages->getPage(__DIR__ . '/pages/markdown/bar.md');
+        $this->assertInstanceOf(MarkdownFile::class, $page);
+
+        // Make sure we got the right one, and it's parsed
+        $this->assertSame('Bar page', $page->getTitle());
+        $this->assertSame('<p>Lorem ipsum <em>dolor</em> sit amet.</p>', $page->getContent());
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testgetPages(MarkdownPages $pages): void
+    {
+        $list = $pages->getPages();
+
+        $this->assertCount(3, $list);
+
+        // $this->assertSame([], $list->pluck('title'));
     }
 
     /**
