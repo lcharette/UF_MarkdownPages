@@ -125,6 +125,30 @@ class MarkdownFile implements PageInterface
     }
 
     /**
+     * @param string $prop
+     *
+     * @return mixed
+     */
+    public function __get(string $prop)
+    {
+        if (!$this->__isset($prop)) {
+            throw new \Exception("Undefined property: " . __CLASS__ . "::$" . $prop);
+        }
+
+        return $this->getMetadata()[$prop];
+    }
+
+    /**
+     * @param string $prop
+     *
+     * @return bool
+     */
+    public function __isset(string $prop) : bool
+    {
+        return key_exists($prop, $this->getMetadata());
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getTitle(): string
