@@ -16,21 +16,32 @@ use UserFrosting\Sprinkle\MarkdownPages\Markdown\Elements\MarkdownNotices;
 use UserFrosting\System\Sprinkle\Sprinkle;
 
 /**
- *    Bootstrapper class for the MarkdownPages sprinkle.
+ * Bootstrapper class for the MarkdownPages sprinkle.
  */
 class MarkdownPages extends Sprinkle
 {
     /**
-     *    Defines which events in the UF lifecycle our Sprinkle should hook into.
+     * @return mixed[] List of events to subscribe, formatted as ['eventName' => ['methodName', $priority]].
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
+            'onAppInitialize'       => ['onAppInitialize', 0],
             'onMarkdownInitialized' => ['onMarkdownInitialized', 0],
         ];
     }
 
     /**
+     * Set static references to DI container in necessary classes.
+     */
+    public function onAppInitialize(): void
+    {
+        /** @var \UserFrosting\UniformResourceLocator\ResourceLocator $locator */
+        $locator = $this->ci->locator;
+
+        $locator->registerStream('markdown', '', 'pages');
+    }
+
     /**
      * Listener for onMarkdownInitialized events.
      * Adds custom markdown elements.

@@ -125,30 +125,6 @@ class MarkdownFile implements PageInterface
     }
 
     /**
-     * @param string $prop
-     *
-     * @return mixed
-     */
-    public function __get(string $prop)
-    {
-        if (!$this->__isset($prop)) {
-            throw new \Exception("Undefined property: " . __CLASS__ . "::$" . $prop);
-        }
-
-        return $this->getMetadata()[$prop];
-    }
-
-    /**
-     * @param string $prop
-     *
-     * @return bool
-     */
-    public function __isset(string $prop) : bool
-    {
-        return key_exists($prop, $this->getMetadata());
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getTitle(): string
@@ -192,6 +168,27 @@ class MarkdownFile implements PageInterface
     public function getContent(): string
     {
         return $this->parser->text($this->rawContent);
+    }
+
+    public function getSlug(): string
+    {
+        $dir = pathinfo($this->getPath(), PATHINFO_DIRNAME);
+
+        // We need to remove the order number form the path to get the slug
+        $dirFragments = explode('/', $dir);
+
+        foreach ($dirFragments as $key => $fragment) {
+            $fragmentList = explode('.', $fragment);
+
+            if (count($fragmentList) === 3) {
+                $dirFragments[$key] = $fragmentList[1];
+            } else {
+                $dirFragments[$key] = $fragmentList[0];
+            }
+        }
+
+        // Glue the fragments back together
+        return implode('/', $dirFragments);
     }
 
     /**

@@ -12,14 +12,14 @@
 namespace UserFrosting\Sprinkle\MarkdownPages\Twig;
 
 use Psr\Container\ContainerInterface;
-use Twig_Extension;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPagesManager;
+use Twig\Extension\AbstractExtension;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPages;
 
 /**
  * MarkdownPagesTwigExtension class.
  * Extends Twig functionality for the MarkdownPages sprinkle.
  */
-class MarkdownPagesTwigExtension extends Twig_Extension
+class MarkdownPagesTwigExtension extends AbstractExtension
 {
     /**
      * @var ContainerInterface The global container object, which holds all your services.
@@ -37,24 +37,14 @@ class MarkdownPagesTwigExtension extends Twig_Extension
     }
 
     /**
-     * Get the name of this extension.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return 'userfrosting/MarkdownPages';
-    }
-
-    /**
      * Adds Twig global variables.
      *
-     * @return array[mixed]
+     * @return mixed[]
      */
     public function getGlobals()
     {
         // Create manager instance
-        $manager = new MarkdownPagesManager($this->ci);
+        $manager = new MarkdownPages($this->ci);
 
         return [
             'markdownPagesTree' => $manager->getTree(),

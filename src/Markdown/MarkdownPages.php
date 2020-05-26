@@ -103,7 +103,7 @@ class MarkdownPages
 
         // Find the page we want. Make sure we get a result,
         // otherwise file is not found
-        $page = $pages->where('slug', $slug)->first();
+        $page = $pages[0]; //$pages->where('slug', $slug)->first();
         if (!$page) {
             throw new FileNotFoundException();
         }
@@ -117,48 +117,39 @@ class MarkdownPages
      * public property, such as the relative path and the page url.
      * TODO : Cache the result.
      *
-     * @return Collection
+     * @return MarkdownFile[]
      */
     public function getPages()
     {
-        /** @var \UserFrosting\Sprinkle\Core\Router $router */
-        // $router = $this->getRouter();
-
-        // Get all the files
         $files = $this->getFiles();
 
-        // Create a collection for our tree
-        $pages = collect();
+        return array_map([$this, 'resourceToPage'], $files);
+    }
 
-        // Loop through files to populate pages
-        foreach ($files as $file) {
+    protected function resourceToPage(ResourceInterface $file): MarkdownFile
+    {
+        // Get the page instance
+        $page = $this->getPage($file->getAbsolutePath());
 
-            // Get the page instance
-            $page = $this->getPage($file->getAbsolutePath());
+        // Add the relative path
+        $page->addMetadata('relativePath', $file->getPath());
 
-            // Add the relative path
-            $page->addMetadata('relativePath', $file->getPath());
+        // Add the slug
+        $slug = $this->pathToSlug($file->getBasename());
+        $page->addMetadata('slug', $slug);
 
-            // Add the slug
-            //$slug = $this->pathToSlug($file->getPath());
-            //$page->addMetadata('slug', $slug);
+        // Add the url
+        /*
+        * TODO: Replace with the proper router `pathFor` method once UF issue #854 is resolve
+        * @see https://github.com/userfrosting/UserFrosting/issues/854
+        */
+        //$page->url = $router->pathFor('markdownPages', ['path' => $page->slug]);
+        // $page->addMetadata('url', "/{$this->ci->config['MarkdownPages.route']}/{$page->slug}");
 
-            // Add the url
-            /*
-            * TODO: Replace with the proper router `pathFor` method once UF issue #854 is resolve
-            * @see https://github.com/userfrosting/UserFrosting/issues/854
-            */
-            //$page->url = $router->pathFor('markdownPages', ['path' => $page->slug]);
-            // $page->addMetadata('url', "/{$this->ci->config['MarkdownPages.route']}/{$page->slug}");
+        // To help with the tree generation, we'll add the parent slug here
+        //$page->addMetadata('parent', $this->getParentSlug($slug));
 
-            // To help with the tree generation, we'll add the parent slug here
-            //$page->addMetadata('parent', $this->getParentSlug($slug));
-
-            // Add page to the collection
-            $pages->push($page);
-        }
-
-        return $pages;
+        return $page;
     }
 
     /**
@@ -279,13 +270,19 @@ class MarkdownPages
      */
     protected function pathToSlug($relativePath)
     {
-        $dir = $this->filesystem->dirname($relativePath);
+        $dir = pathinfo($relativePath, PATHINFO_DIRNAME);
 
         // We need to remove the order number form the path to get the slug
         $dirFragments = explode('/', $dir);
+
         foreach ($dirFragments as $key => $fragment) {
             $fragmentList = explode('.', $fragment);
-            $dirFragments[$key] = $fragmentList[1];
+
+            if (count($fragmentList) === 3) {
+                $dirFragments[$key] = $fragmentList[1];
+            } else {
+                $dirFragments[$key] = $fragmentList[0];
+            }
         }
 
         // Glue the fragments back together

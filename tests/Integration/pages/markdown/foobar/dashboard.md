@@ -1,5 +1,5 @@
 ---
-title: Foo/Bar page
+title: Foobar page
 description: The foo/bar page description
 ---
 

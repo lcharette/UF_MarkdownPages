@@ -29,16 +29,24 @@ class ServicesProvider
     {
         $container['markdownPages'] = function ($c) {
 
+            /** @var Parsedown */
+            $parser = $c->markdownParser;
+
+            // Create page manager
+            $markdown = new MarkdownPages($c->locator, $parser);
+
+            return $markdown;
+        };
+
+        $container['markdownParser'] = function ($c) {
+
             // Create parser
             $parser = new Parsedown();
 
             // Fire `onMarkdownInitialized` event to register
             $c->eventDispatcher->dispatch('onMarkdownInitialized', new Event(['markdown' => $parser]));
 
-            // Create page manager
-            $markdown = new MarkdownPages($c->locator, $parser);
-
-            return $markdown;
+            return $parser;
         };
 
         /*
