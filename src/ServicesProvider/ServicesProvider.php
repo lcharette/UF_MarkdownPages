@@ -13,7 +13,7 @@ namespace UserFrosting\Sprinkle\MarkdownPages\ServicesProvider;
 
 use RocketTheme\Toolbox\Event\Event;
 use Slim\Container;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPages;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesManager;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Sprinkle\MarkdownPages\Twig\MarkdownPagesTwigExtension;
 
@@ -33,7 +33,7 @@ class ServicesProvider
             $parser = $c->markdownParser;
 
             // Create page manager
-            $markdown = new MarkdownPages($c->locator, $parser);
+            $markdown = new PagesManager($c->locator, $parser);
 
             return $markdown;
         };

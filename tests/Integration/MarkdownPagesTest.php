@@ -15,7 +15,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPages;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesManager;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\PageCollection;
@@ -29,7 +29,7 @@ use UserFrosting\UniformResourceLocator\ResourceLocator;
  */
 class MarkdownPagesTest extends TestCase
 {
-    public function testConstructor(): MarkdownPages
+    public function testConstructor(): PagesManager
     {
         $locator = new ResourceLocator(__DIR__);
         $locator->registerStream('markdown');
@@ -38,8 +38,8 @@ class MarkdownPagesTest extends TestCase
         $parser = new Parsedown();
         $filesystem = new Filesystem();
 
-        $pages = new MarkdownPages($locator, $parser, $filesystem);
-        $this->assertInstanceOf(MarkdownPages::class, $pages);
+        $pages = new PagesManager($locator, $parser, $filesystem);
+        $this->assertInstanceOf(PagesManager::class, $pages);
         $this->assertSame($parser, $pages->getParser());
 
         return $pages;
@@ -47,13 +47,13 @@ class MarkdownPagesTest extends TestCase
 
     public function testServcice(): void
     {
-        $this->assertInstanceOf(MarkdownPages::class, $this->ci->markdownPages);
+        $this->assertInstanceOf(PagesManager::class, $this->ci->markdownPages);
     }
 
     /**
      * @depends testConstructor
      */
-    public function testGetFiles(MarkdownPages $pages): void
+    public function testGetFiles(PagesManager $pages): void
     {
         $expectedFiles = [
             __DIR__ . '/pages/markdown/01.foo/01.bar/dashboard.md',
@@ -82,7 +82,7 @@ class MarkdownPagesTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testgetPages(MarkdownPages $pages): void
+    public function testgetPages(PagesManager $pages): void
     {
         $list = $pages->getPages();
         $this->assertInstanceOf(PageCollection::class, $list);

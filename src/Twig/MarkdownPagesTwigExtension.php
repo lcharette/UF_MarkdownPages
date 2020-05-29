@@ -13,7 +13,7 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Twig;
 
 use Psr\Container\ContainerInterface;
 use Twig\Extension\AbstractExtension;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPages;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesManager;
 
 /**
  * MarkdownPagesTwigExtension class.
@@ -44,7 +44,7 @@ class MarkdownPagesTwigExtension extends AbstractExtension
     public function getGlobals()
     {
         // Create manager instance
-        $manager = new MarkdownPages($this->ci);
+        $manager = new PagesManager($this->ci);
 
         return [
             'markdownPagesTree' => $manager->getTree(),

@@ -15,7 +15,7 @@ use Slim\Http\Response;
 use Slim\Http\Request;
 use UserFrosting\Sprinkle\Account\Authenticate\Exception\AuthExpiredException;
 use UserFrosting\Sprinkle\Core\Controller\SimpleController;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPages;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesManager;
 
 /**
  * MarkdownPagesController Class

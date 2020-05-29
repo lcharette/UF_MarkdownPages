@@ -21,9 +21,9 @@ use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
- *   MarkdownPagesManager.
+ * PagesManager
  */
-class MarkdownPages
+class PagesManager
 {
     /**
      * @var string The locator scheme for the files.

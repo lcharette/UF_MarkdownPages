@@ -14,7 +14,7 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Tests\Unit;
 use Illuminate\Filesystem\Filesystem;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPages;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesManager;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
@@ -34,8 +34,8 @@ class MarkdownPagesTest extends TestCase
         $parser = Mockery::mock(Parsedown::class);
         $filesystem = Mockery::mock(Filesystem::class);
 
-        $pages = new MarkdownPages($locator, $parser, $filesystem);
-        $this->assertInstanceOf(MarkdownPages::class, $pages);
+        $pages = new PagesManager($locator, $parser, $filesystem);
+        $this->assertInstanceOf(PagesManager::class, $pages);
         $this->assertSame($parser, $pages->getParser());
     }
 
@@ -53,7 +53,7 @@ class MarkdownPagesTest extends TestCase
         $parser = Mockery::mock(Parsedown::class);
         $filesystem = Mockery::mock(Filesystem::class);
 
-        $pages = new MarkdownPages($locator, $parser, $filesystem);
+        $pages = new PagesManager($locator, $parser, $filesystem);
         $files = $pages->getFiles();
 
         $this->assertSame($expectedFiles, $files);
@@ -67,7 +67,7 @@ class MarkdownPagesTest extends TestCase
         $parser = Mockery::mock(Parsedown::class);
         $filesystem = Mockery::mock(Filesystem::class);
 
-        $pages = new MarkdownPages($locator, $parser, $filesystem);
+        $pages = new PagesManager($locator, $parser, $filesystem);
         $pages->setScheme('foo://');
         $files = $pages->getFiles();
 
