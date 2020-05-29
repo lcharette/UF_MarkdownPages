@@ -117,13 +117,13 @@ class PagesManager
      * public property, such as the relative path and the page url.
      * TODO : Cache the result.
      *
-     * @return PageCollection
+     * @return PagesTree
      */
-    public function getPages(): PageCollection
+    public function getPages(): PagesTree
     {
         $files = $this->getFiles();
 
-        $collection = new PageCollection();
+        $collection = new PagesTree();
 
         foreach ($files as $file) {
             $page = $this->resourceToPage($file);
@@ -133,7 +133,7 @@ class PagesManager
         return $collection;
     }
 
-    protected function resourceToPage(ResourceInterface $file): Page
+    protected function resourceToPage(ResourceInterface $file): PageNode
     {
         // Get the page instance
         $markdown = $this->getPage($file->getAbsolutePath());
@@ -145,7 +145,7 @@ class PagesManager
         $slug = $this->pathToSlug($file->getBasename());
         //$page->addMetadata('slug', $slug);
 
-        $page = new Page($markdown, $slug);
+        $page = new PageNode($markdown, $slug);
 
         // Add the url
         /*

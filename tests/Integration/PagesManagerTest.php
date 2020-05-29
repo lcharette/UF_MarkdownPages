@@ -14,11 +14,11 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Tests\Integration;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\PageNode;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesManager;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\PageCollection;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesTree;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Support\Exception\FileNotFoundException;
 use UserFrosting\Tests\TestCase;
@@ -27,7 +27,7 @@ use UserFrosting\UniformResourceLocator\ResourceLocator;
 /**
  *    Tests for MarkdownPages class.
  */
-class MarkdownPagesTest extends TestCase
+class PagesManagerTest extends TestCase
 {
     public function testConstructor(): PagesManager
     {
@@ -85,10 +85,10 @@ class MarkdownPagesTest extends TestCase
     public function testgetPages(PagesManager $pages): void
     {
         $list = $pages->getPages();
-        $this->assertInstanceOf(PageCollection::class, $list);
+        $this->assertInstanceOf(PagesTree::class, $list);
 
         $this->assertCount(4, $list);
-        $this->assertContainsOnlyInstancesOf(Page::class, $list);
+        $this->assertContainsOnlyInstancesOf(PageNode::class, $list);
 
         /*$this->assertSame([
             'Bar under Foo',

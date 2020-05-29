@@ -24,7 +24,7 @@ use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 /**
  * Tests for MarkdownPages class.
  */
-class MarkdownPagesTest extends TestCase
+class PagesManagerTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 

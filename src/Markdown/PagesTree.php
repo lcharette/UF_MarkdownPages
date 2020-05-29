@@ -16,11 +16,11 @@ use Countable;
 use IteratorAggregate;
 
 /**
- * @phpstan-implements IteratorAggregate<PageInterface>
+ * @phpstan-implements IteratorAggregate<PageNode>
  */
-class PageCollection implements IteratorAggregate, Countable
+class PagesTree implements IteratorAggregate, Countable
 {
-    /** @var Page[] */
+    /** @var PageNode[] */
     protected $pages = [];
 
     public function getIterator(): \Traversable
@@ -33,7 +33,7 @@ class PageCollection implements IteratorAggregate, Countable
         return count($this->pages);
     }
 
-    public function add(Page $newPage): self
+    public function add(PageNode $newPage): self
     {
         $this->pages[] = $newPage;
 

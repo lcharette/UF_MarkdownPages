@@ -13,7 +13,7 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
 
-class Page
+class PageNode
 {
     /** @var PageInterface */
     protected $page;
@@ -21,7 +21,7 @@ class Page
     /** @var string */
     protected $slug;
 
-    /** @var Page */
+    /** @var PageNode */
     protected $parent;
 
     public function __construct(PageInterface $page, string $slug)
@@ -49,7 +49,7 @@ class Page
     /**
      * Get the value of parent
      */
-    public function getParent(): Page
+    public function getParent(): PageNode
     {
         return $this->parent;
     }
@@ -59,7 +59,7 @@ class Page
      *
      * @return self
      */
-    public function setParent(Page $parent)
+    public function setParent(PageNode $parent)
     {
         $this->parent = $parent;
 

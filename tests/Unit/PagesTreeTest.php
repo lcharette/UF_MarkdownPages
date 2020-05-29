@@ -13,25 +13,25 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Tests\Unit;
 
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\PageCollection;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\PageNode;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesTree;
 use UserFrosting\Tests\TestCase;
 
 /**
  * Tests for MarkdownPages class.
  */
-class PageCollectionTest extends TestCase
+class PagesTreeTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
     public function testMe(): void
     {
-        $collection = new PageCollection();
-        $collection->add(Mockery::mock(Page::class)->shouldReceive('getTitle')->andReturn('foo')->getMock())
-                    ->add(Mockery::mock(Page::class)->shouldReceive('getTitle')->andReturn('bar')->getMock())
-                    ->add(Mockery::mock(Page::class)->shouldReceive('getTitle')->andReturn('foobar')->getMock());
+        $collection = new PagesTree();
+        $collection->add(Mockery::mock(PageNode::class)->shouldReceive('getTitle')->andReturn('foo')->getMock())
+                    ->add(Mockery::mock(PageNode::class)->shouldReceive('getTitle')->andReturn('bar')->getMock())
+                    ->add(Mockery::mock(PageNode::class)->shouldReceive('getTitle')->andReturn('foobar')->getMock());
 
         $this->assertCount(3, $collection);
-        $this->assertContainsOnlyInstancesOf(Page::class, $collection);
+        $this->assertContainsOnlyInstancesOf(PageNode::class, $collection);
     }
 }
