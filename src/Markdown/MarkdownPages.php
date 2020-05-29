@@ -117,26 +117,35 @@ class MarkdownPages
      * public property, such as the relative path and the page url.
      * TODO : Cache the result.
      *
-     * @return MarkdownFile[]
+     * @return PageCollection
      */
-    public function getPages()
+    public function getPages(): PageCollection
     {
         $files = $this->getFiles();
 
-        return array_map([$this, 'resourceToPage'], $files);
+        $collection = new PageCollection();
+
+        foreach ($files as $file) {
+            $page = $this->resourceToPage($file);
+            $collection->add($page);
+        }
+
+        return $collection;
     }
 
-    protected function resourceToPage(ResourceInterface $file): MarkdownFile
+    protected function resourceToPage(ResourceInterface $file): Page
     {
         // Get the page instance
-        $page = $this->getPage($file->getAbsolutePath());
+        $markdown = $this->getPage($file->getAbsolutePath());
 
         // Add the relative path
-        $page->addMetadata('relativePath', $file->getPath());
+        //$page->addMetadata('relativePath', $file->getPath());
 
         // Add the slug
         $slug = $this->pathToSlug($file->getBasename());
-        $page->addMetadata('slug', $slug);
+        //$page->addMetadata('slug', $slug);
+
+        $page = new Page($markdown, $slug);
 
         // Add the url
         /*

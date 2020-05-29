@@ -134,17 +134,4 @@ class MarkdownFileTest extends TestCase
         $this->assertSame('', $page->getTitle());
         $this->assertSame('', $page->getDescription());
     }
-
-    /*public function testGetSlug(): void
-    {
-        $parser = new Parsedown();
-        $filesystem = new Filesystem();
-
-        $page = new MarkdownFile(__DIR__ . '/pages/markdown/01.foo/01.bar/dashboard.md', $parser, $filesystem);
-
-        $this->assertSame('Bar under Foo', $page->getTitle());
-        $this->assertSame('dashboard', $page->getTemplate());
-        $this->assertSame(__DIR__ . '/pages/markdown/01.foo/01.bar/dashboard.md', $page->getPath());
-        $this->assertSame('foo', $page->getSlug());
-    }*/
 }

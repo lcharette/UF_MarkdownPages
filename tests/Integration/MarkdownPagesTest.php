@@ -18,6 +18,7 @@ use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\MarkdownPages;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\PageCollection;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Support\Exception\FileNotFoundException;
 use UserFrosting\Tests\TestCase;
@@ -52,7 +53,7 @@ class MarkdownPagesTest extends TestCase
     /**
      * @depends testConstructor
      */
-    /*public function testGetFiles(MarkdownPages $pages): void
+    public function testGetFiles(MarkdownPages $pages): void
     {
         $expectedFiles = [
             __DIR__ . '/pages/markdown/01.foo/01.bar/dashboard.md',
@@ -63,7 +64,7 @@ class MarkdownPagesTest extends TestCase
 
         $files = $pages->getFiles();
         $this->assertEquals($expectedFiles, $files);
-    }*/
+    }
 
     /**
      * @depends testConstructor
@@ -81,27 +82,28 @@ class MarkdownPagesTest extends TestCase
     /**
      * @depends testConstructor
      */
-    /*public function testgetPages(MarkdownPages $pages): void
+    public function testgetPages(MarkdownPages $pages): void
     {
         $list = $pages->getPages();
+        $this->assertInstanceOf(PageCollection::class, $list);
 
         $this->assertCount(4, $list);
-        $this->assertContainsOnlyInstancesOf(PageInterface::class, $list);
+        $this->assertContainsOnlyInstancesOf(Page::class, $list);
 
-        $this->assertSame([
+        /*$this->assertSame([
             'Bar under Foo',
             'Foo page',
             'Bar page',
             'Foobar page',
-        ], array_column($list, 'title'));
+        ], array_column($list, 'title'));*/
 
-        $this->assertSame([
+        /*$this->assertSame([
             'foo',
             'foo/bar',
             'bar',
             'foobar',
-        ], array_column($list, 'slug'));
-    }*/
+        ], array_column($list, 'slug'));*/
+    }
 
     /**
      *    Test if the manager return the correct thing when given a full path.

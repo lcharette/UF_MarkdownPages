@@ -53,11 +53,6 @@ class MarkdownFile implements PageInterface
     protected $metadata;
 
     /**
-     * @var array<string,mixed>
-     */
-    protected $custom_metadata = [];
-
-    /**
      * Class constructor.
      *
      * @param string    $path   The file full path
@@ -111,17 +106,7 @@ class MarkdownFile implements PageInterface
             $this->metadata = $this->parser->meta($this->rawContent);
         }
 
-        return array_replace_recursive($this->metadata, $this->custom_metadata);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addMetadata(string $slug, $value)
-    {
-        $this->custom_metadata[$slug] = $value;
-
-        return $this;
+        return $this->metadata;
     }
 
     /**
@@ -168,27 +153,6 @@ class MarkdownFile implements PageInterface
     public function getContent(): string
     {
         return $this->parser->text($this->rawContent);
-    }
-
-    public function getSlug(): string
-    {
-        $dir = pathinfo($this->getPath(), PATHINFO_DIRNAME);
-
-        // We need to remove the order number form the path to get the slug
-        $dirFragments = explode('/', $dir);
-
-        foreach ($dirFragments as $key => $fragment) {
-            $fragmentList = explode('.', $fragment);
-
-            if (count($fragmentList) === 3) {
-                $dirFragments[$key] = $fragmentList[1];
-            } else {
-                $dirFragments[$key] = $fragmentList[0];
-            }
-        }
-
-        // Glue the fragments back together
-        return implode('/', $dirFragments);
     }
 
     /**

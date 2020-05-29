@@ -14,14 +14,13 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
 
 /**
  * @phpstan-implements IteratorAggregate<PageInterface>
  */
 class PageCollection implements IteratorAggregate, Countable
 {
-    /** @var PageInterface[] */
+    /** @var Page[] */
     protected $pages = [];
 
     public function getIterator(): \Traversable
@@ -34,7 +33,7 @@ class PageCollection implements IteratorAggregate, Countable
         return count($this->pages);
     }
 
-    public function add(PageInterface $newPage): self
+    public function add(Page $newPage): self
     {
         $this->pages[] = $newPage;
 
