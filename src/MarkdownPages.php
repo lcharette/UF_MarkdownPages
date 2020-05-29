@@ -12,7 +12,7 @@
 namespace UserFrosting\Sprinkle\MarkdownPages;
 
 use RocketTheme\Toolbox\Event\Event;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\Elements\MarkdownNotices;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Elements\MarkdownNotices;
 use UserFrosting\System\Sprinkle\Sprinkle;
 
 /**

@@ -12,7 +12,7 @@
 namespace UserFrosting\Sprinkle\MarkdownPages\Tests\Integration;
 
 use Illuminate\Filesystem\Filesystem;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\Elements\MarkdownNotices;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Elements\MarkdownNotices;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Tests\TestCase;

@@ -9,7 +9,7 @@
  * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/LICENSE.md (MIT License)
  */
 
-namespace UserFrosting\Sprinkle\MarkdownPages\Markdown\Elements;
+namespace UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Elements;
 
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Sprinkle\Core\Facades\Translator;
