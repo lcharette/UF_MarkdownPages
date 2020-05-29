@@ -13,8 +13,11 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Markdown\Page;
 
 use Illuminate\Filesystem\Filesystem;
 use InvalidArgumentException;
+use League\Csv\InvalidArgument;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Support\Exception\FileNotFoundException;
+use UserFrosting\UniformResourceLocator\ResourceInterface;
+use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
  * Markdown File implementation of the Page Interface.
@@ -28,24 +31,24 @@ use UserFrosting\Support\Exception\FileNotFoundException;
 class MarkdownFile implements PageInterface
 {
     /**
-     * @var string The file path
-     */
-    protected $path;
-
-    /**
      * @var string The file raw content
      */
     protected $rawContent;
 
     /**
-     * @var Filesystem
+     * @var ResourceInterface
      */
-    protected $filesystem;
+    protected $resource;
 
     /**
      * @var Parsedown The markdown parser
      */
     protected $parser;
+
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
 
     /**
      * @var string[] Local cache of the file metadata
@@ -60,16 +63,19 @@ class MarkdownFile implements PageInterface
     /**
      * Class constructor.
      *
-     * @param string    $path   The file full path
-     * @param Parsedown $parser The markdown parser
+     * @param ResourceInterface $resource
+     * @param Parsedown $parser
+     * @param Filesystem|null $filesystem
      */
-    public function __construct(string $path, Parsedown $parser, Filesystem $filesystem)
+    public function __construct(ResourceInterface $resource, Parsedown $parser, ?Filesystem $filesystem = null)
     {
-        $this->path = $path;
-        $this->filesystem = $filesystem;
+        if (is_null($filesystem)) {
+            $filesystem = new Filesystem();
+        }
 
-        // Create Markdown parser instance
+        $this->resource = $resource;
         $this->parser = $parser;
+        $this->filesystem = $filesystem;
 
         // Load the file
         $this->load();
@@ -87,19 +93,22 @@ class MarkdownFile implements PageInterface
     protected function load(): void
     {
         // Make sure the page exist
-        if (!$this->filesystem->exists($this->path)) {
+        if (!$this->filesystem->exists($this->resource)) {
             throw new FileNotFoundException();
         }
 
-        // Make sure file is markdown
-        if ($this->filesystem->extension($this->path) != 'md' || $this->filesystem->mimeType($this->path) != 'text/plain') {
-            $filename = $this->filesystem->basename($this->path);
+        $extension = $this->resource->getExtension();
+        $mimeType = $this->filesystem->mimeType($this->resource);
 
-            throw new InvalidArgumentException("File `$filename` ({$this->filesystem->mimeType($this->path)}) doesn't seems to be a valid markdown file.");
+        // Make sure file is markdown
+        if ($extension != 'md' || $mimeType != 'text/plain') {
+            $filename = $this->resource->getUri();
+
+            throw new InvalidArgumentException("File `$filename` ($mimeType) doesn't seems to be a valid markdown file.");
         }
 
         // Get content
-        $this->rawContent = $this->filesystem->get($this->path);
+        $this->rawContent = $this->filesystem->get($this->resource);
     }
 
     /**
