@@ -21,8 +21,8 @@ class PageNode
     /** @var string */
     protected $slug;
 
-    /** @var PageNode */
-    protected $parent;
+    /** @var PageNode|null */
+    protected $parent = null;
 
     public function __construct(PageInterface $page, string $slug)
     {
@@ -49,7 +49,7 @@ class PageNode
     /**
      * Get the value of parent
      */
-    public function getParent(): PageNode
+    public function getParent(): ?PageNode
     {
         return $this->parent;
     }
@@ -57,9 +57,11 @@ class PageNode
     /**
      * Set the value of parent
      *
+     * @param PageNode|null $parent
+     *
      * @return self
      */
-    public function setParent(PageNode $parent)
+    public function setParent(?PageNode $parent)
     {
         $this->parent = $parent;
 
