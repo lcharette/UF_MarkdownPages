@@ -45,7 +45,8 @@ class MarkdownPagesController extends SimpleController
 
         // Get the file instance. A file not found exception will be thrown
         // if the page doesn't exist
-        $file = $manager->findPage($args['path']);
+        $page = $manager->findPage($args['path']);
+        $file = $page->getPage();
 
         // Get the file metadata
         $metadata = $file->getMetadata();

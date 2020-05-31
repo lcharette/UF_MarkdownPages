@@ -14,6 +14,7 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Tests\Unit;
 use Illuminate\Filesystem\Filesystem;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use UserFrosting\Sprinkle\Core\Router;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesManager;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
@@ -32,9 +33,10 @@ class PagesManagerTest extends TestCase
     {
         $locator = Mockery::mock(ResourceLocatorInterface::class);
         $parser = Mockery::mock(Parsedown::class);
+        $router = Mockery::mock(Router::class);
         $filesystem = Mockery::mock(Filesystem::class);
 
-        $pages = new PagesManager($locator, $parser, $filesystem);
+        $pages = new PagesManager($locator, $parser, $router, $filesystem);
         $this->assertInstanceOf(PagesManager::class, $pages);
         $this->assertSame($parser, $pages->getParser());
     }
@@ -51,9 +53,10 @@ class PagesManagerTest extends TestCase
             ->shouldReceive('listResources')->with('markdown://')->once()->andReturn($expectedFiles)
             ->getMock();
         $parser = Mockery::mock(Parsedown::class);
+        $router = Mockery::mock(Router::class);
         $filesystem = Mockery::mock(Filesystem::class);
 
-        $pages = new PagesManager($locator, $parser, $filesystem);
+        $pages = new PagesManager($locator, $parser, $router, $filesystem);
         $files = $pages->getFiles();
 
         $this->assertSame($expectedFiles, $files);
@@ -65,9 +68,10 @@ class PagesManagerTest extends TestCase
             ->shouldReceive('listResources')->with('foo://')->once()->andReturn([])
             ->getMock();
         $parser = Mockery::mock(Parsedown::class);
+        $router = Mockery::mock(Router::class);
         $filesystem = Mockery::mock(Filesystem::class);
 
-        $pages = new PagesManager($locator, $parser, $filesystem);
+        $pages = new PagesManager($locator, $parser, $router, $filesystem);
         $pages->setScheme('foo://');
         $files = $pages->getFiles();
 

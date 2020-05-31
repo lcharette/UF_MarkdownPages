@@ -22,6 +22,7 @@ use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesTree;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Support\Exception\FileNotFoundException;
 use UserFrosting\Tests\TestCase;
+use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
 
 /**
@@ -29,16 +30,24 @@ use UserFrosting\UniformResourceLocator\ResourceLocator;
  */
 class PagesManagerTest extends TestCase
 {
+    /** @var ResourceLocator */
+    protected $locator;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->locator = new ResourceLocator(__DIR__);
+        $this->locator->registerStream('markdown');
+        $this->locator->registerLocation('pages');
+    }
+
     public function testConstructor(): PagesManager
     {
-        $locator = new ResourceLocator(__DIR__);
-        $locator->registerStream('markdown');
-        $locator->registerLocation('pages');
-
         $parser = new Parsedown();
         $filesystem = new Filesystem();
 
-        $pages = new PagesManager($locator, $parser, $filesystem);
+        $pages = new PagesManager($this->locator, $parser, $this->ci->router, $filesystem);
         $this->assertInstanceOf(PagesManager::class, $pages);
         $this->assertSame($parser, $pages->getParser());
 
@@ -82,20 +91,66 @@ class PagesManagerTest extends TestCase
     /**
      * @depends testConstructor
      */
-    public function testgetPages(PagesManager $pages): void
+    public function testfindPage(PagesManager $pages): void
     {
-        $list = $pages->getPages();
+        $node = $pages->findPage('foo/bar');
+
+        $this->assertInstanceOf(PageNode::class, $node);
+        $this->assertInstanceOf(PageInterface::class, $node->getPage());
+        $this->assertSame('foo/bar', $node->getSlug());
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testgetPageNode(PagesManager $pages): void
+    {
+        // Get file
+        $file = $this->locator->getResource('markdown://01.foo/01.bar/dashboard.md');
+        $this->assertInstanceOf(ResourceInterface::class, $file);
+
+        // Get node
+        $node = $pages->getPageNode($file);
+        $this->assertInstanceOf(PageNode::class, $node);
+
+        // Assert elements
+        $this->assertInstanceOf(PageInterface::class, $node->getPage());
+        $this->assertSame('foo/bar', $node->getSlug());
+        $this->assertSame('/p/foo/bar/', $node->getUrl()); // Generation is done using the trailing `/`, because the router need to catch both cases
+
+        // Assert parents
+        $parent = $node->getParent();
+        // $this->assertNotNull($parent);
+        $this->assertSame('foo', $parent);
+        //$this->assertInstanceOf(PageNode::class, $parent);
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testgetTree(PagesManager $pages): void
+    {
+        $list = $pages->getTree();
         $this->assertInstanceOf(PagesTree::class, $list);
 
+        // Assert countable
         $this->assertCount(4, $list);
-        $this->assertContainsOnlyInstancesOf(PageNode::class, $list);
+
+        // Assert to array
+        $array = $list->toArray();
+        $this->assertIsArray($array);
+        $this->assertContainsOnlyInstancesOf(PageNode::class, $array);
+
+        $node = $list->forSlug('foo/bar');
+        $this->assertInstanceOf(PageNode::class, $node);
+        $this->assertSame('foo/bar', $node->getSlug());
 
         /*$this->assertSame([
             'Bar under Foo',
             'Foo page',
             'Bar page',
             'Foobar page',
-        ], array_column($list, 'title'));*/
+        ], array_column($array, 'slug'));*/
 
         /*$this->assertSame([
             'foo',

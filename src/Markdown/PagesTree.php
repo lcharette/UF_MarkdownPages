@@ -39,4 +39,23 @@ class PagesTree implements IteratorAggregate, Countable
 
         return $this;
     }
+
+    /**
+     * @return PageNode[]
+     */
+    public function toArray(): array
+    {
+        return $this->pages;
+    }
+
+    public function forSlug(string $slug): ?PageNode
+    {
+        foreach ($this->pages as $page) {
+            if ($page->getSlug() === $slug) {
+                return $page;
+            }
+        }
+
+        return null;
+    }
 }

@@ -33,7 +33,7 @@ class ServicesProvider
             $parser = $c->markdownParser;
 
             // Create page manager
-            $markdown = new PagesManager($c->locator, $parser);
+            $markdown = new PagesManager($c->locator, $parser, $c->router);
 
             return $markdown;
         };

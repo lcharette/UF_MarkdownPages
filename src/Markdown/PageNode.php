@@ -21,8 +21,11 @@ class PageNode
     /** @var string */
     protected $slug;
 
-    /** @var PageNode|null */
+    /** @var string|null */
     protected $parent = null;
+
+    /** @var string */
+    protected $url = '';
 
     public function __construct(PageInterface $page, string $slug)
     {
@@ -49,7 +52,7 @@ class PageNode
     /**
      * Get the value of parent
      */
-    public function getParent(): ?PageNode
+    public function getParent(): ?string
     {
         return $this->parent;
     }
@@ -57,13 +60,33 @@ class PageNode
     /**
      * Set the value of parent
      *
-     * @param PageNode|null $parent
+     * @param string|null $parent
      *
      * @return self
      */
-    public function setParent(?PageNode $parent)
+    public function setParent(?string $parent)
     {
         $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of url
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set the value of url
+     *
+     * @return  self
+     */
+    public function setUrl(string $url)
+    {
+        $this->url = $url;
 
         return $this;
     }

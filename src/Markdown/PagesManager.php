@@ -13,6 +13,7 @@ namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use UserFrosting\Sprinkle\Core\Router;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
@@ -41,6 +42,11 @@ class PagesManager
     protected $parser;
 
     /**
+     * @var Router
+     */
+    protected $router;
+
+    /**
      * @var Filesystem
      */
     protected $filesystem;
@@ -52,10 +58,11 @@ class PagesManager
      * @param Parsedown                $parser
      * @param Filesystem|null          $filesystem
      */
-    public function __construct(ResourceLocatorInterface $locator, Parsedown $parser, ?Filesystem $filesystem = null)
+    public function __construct(ResourceLocatorInterface $locator, Parsedown $parser, Router $router, ?Filesystem $filesystem = null)
     {
         $this->locator = $locator;
         $this->parser = $parser;
+        $this->router = $router;
 
         if (is_null($filesystem)) {
             $this->filesystem = new Filesystem();
@@ -94,17 +101,17 @@ class PagesManager
      *
      * @throws FileNotFoundException If page is not found
      *
-     * @return PageInterface The page instance
+     * @return PageNode The page instance
      */
-    public function findPage($slug)
+    public function findPage(string $slug): PageNode
     {
         // Get all pages
-        $pages = $this->getPages();
+        $pages = $this->getTree();
+        $page = $pages->forSlug($slug);
 
         // Find the page we want. Make sure we get a result,
         // otherwise file is not found
-        $page = $pages[0]; //$pages->where('slug', $slug)->first();
-        if (!$page) {
+        if (is_null($page)) {
             throw new FileNotFoundException();
         }
 
@@ -119,44 +126,37 @@ class PagesManager
      *
      * @return PagesTree
      */
-    public function getPages(): PagesTree
+    public function getTree(): PagesTree
     {
         $files = $this->getFiles();
 
         $collection = new PagesTree();
 
         foreach ($files as $file) {
-            $page = $this->resourceToPage($file);
+            $page = $this->getPageNode($file);
             $collection->add($page);
         }
 
         return $collection;
     }
 
-    protected function resourceToPage(ResourceInterface $file): PageNode
+    public function getPageNode(ResourceInterface $file): PageNode
     {
         // Get the page instance
         $markdown = $this->getPage($file->getAbsolutePath());
 
-        // Add the relative path
-        //$page->addMetadata('relativePath', $file->getPath());
-
         // Add the slug
-        $slug = $this->pathToSlug($file->getBasename());
-        //$page->addMetadata('slug', $slug);
+        $slug = $this->pathToSlug($file->getBasePath());
 
         $page = new PageNode($markdown, $slug);
 
         // Add the url
-        /*
-        * TODO: Replace with the proper router `pathFor` method once UF issue #854 is resolve
-        * @see https://github.com/userfrosting/UserFrosting/issues/854
-        */
-        //$page->url = $router->pathFor('markdownPages', ['path' => $page->slug]);
-        // $page->addMetadata('url', "/{$this->ci->config['MarkdownPages.route']}/{$page->slug}");
+        $url = $this->router->pathFor('markdownPages', ['path' => $slug]);
+        $page->setUrl($url);
 
         // To help with the tree generation, we'll add the parent slug here
-        //$page->addMetadata('parent', $this->getParentSlug($slug));
+        $parent = $this->getParentSlug($slug);
+        $page->setParent($parent);
 
         return $page;
     }
@@ -168,24 +168,24 @@ class PagesManager
      *
      * @return Collection
      */
-    public function getTree($topLevel = '')
+    /*public function getTree($topLevel = '')
     {
         // Get all pages
-        $pages = $this->getPages();
+        $pages = $this->getTree();
 
         //Sort the collection
         $pages = $pages->sortBy('relativePath');
 
         // We start by top most pages (the one without parent) and go down from here
         return $this->getPagesChildren($pages, $topLevel);
-    }
+    }*/
 
     /**
      * Set breadcrumbs recursively for the specified page and it's parent.
      *
      * @param PageInterface $page
      */
-    public function setBreadcrumbs(PageInterface $page)
+    /*public function setBreadcrumbs(PageInterface $page)
     {
         // Add it to the breadcrumb
         $this->ci->breadcrumb->prepend($page->getTitle(), $page->url);
@@ -200,7 +200,7 @@ class PagesManager
 
         // Add the parent's parent
         $this->setBreadcrumbs($parent);
-    }
+    }*/
 
     /**
      * Set the value of scheme
@@ -287,10 +287,10 @@ class PagesManager
         foreach ($dirFragments as $key => $fragment) {
             $fragmentList = explode('.', $fragment);
 
-            if (count($fragmentList) === 3) {
-                $dirFragments[$key] = $fragmentList[1];
-            } else {
+            if (count($fragmentList) == 1) {
                 $dirFragments[$key] = $fragmentList[0];
+            } else {
+                $dirFragments[$key] = $fragmentList[1];
             }
         }
 
