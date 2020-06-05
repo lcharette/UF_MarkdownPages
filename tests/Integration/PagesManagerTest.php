@@ -12,15 +12,9 @@
 namespace UserFrosting\Sprinkle\MarkdownPages\Tests\Integration;
 
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
-use InvalidArgumentException;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\PageNode;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesManager;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesTree;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
-use UserFrosting\Support\Exception\FileNotFoundException;
 use UserFrosting\Tests\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
@@ -64,116 +58,198 @@ class PagesManagerTest extends TestCase
      */
     public function testGetFiles(PagesManager $pages): void
     {
-        $expectedFiles = [
-            __DIR__ . '/pages/markdown/01.foo/01.bar/dashboard.md',
-            __DIR__ . '/pages/markdown/01.foo/dashboard.md',
-            __DIR__ . '/pages/markdown/02.bar/dashboard.md',
-            __DIR__ . '/pages/markdown/foobar/dashboard.md',
+        $expected = [
+            // Slug         => Path
+            'foo/bar'       => __DIR__ . '/pages/markdown/01.foo/02.bar/dashboard.md',
+            'foo/foo'       => __DIR__ . '/pages/markdown/01.foo/01.foo/dashboard.md',
+            'foo/bar/foo'   => __DIR__ . '/pages/markdown/01.foo/02.bar/foo/dashboard.md',
+            'foo'           => __DIR__ . '/pages/markdown/01.foo/dashboard.md',
+            'bar'           => __DIR__ . '/pages/markdown/02.bar/dashboard.md',
+            'foobar'        => __DIR__ . '/pages/markdown/foobar/dashboard.md',
         ];
 
-        $files = $pages->getFiles();
-        $this->assertEquals($expectedFiles, $files);
+        $result = $pages->getFiles();
+        $this->assertEquals($expected, $result);
     }
 
     /**
      * @depends testConstructor
      */
-    /*public function testgetPage(MarkdownPages $pages): void
+    public function testfindFile(PagesManager $pages): void
     {
-        $page = $pages->getPage(__DIR__ . '/pages/markdown/02.bar/dashboard.md');
-        $this->assertInstanceOf(MarkdownFile::class, $page);
+        $file = $pages->findFile('foo/bar');
 
-        // Make sure we got the right one, and it's parsed
-        $this->assertSame('Bar page', $page->getTitle());
-        $this->assertSame('<p>Lorem ipsum <em>dolor</em> sit amet.</p>', $page->getContent());
-    }*/
+        $this->assertInstanceOf(ResourceInterface::class, $file);
+        $this->assertEquals(__DIR__ . '/pages/markdown/01.foo/02.bar/dashboard.md', $file);
+    }
 
     /**
      * @depends testConstructor
      */
     public function testfindPage(PagesManager $pages): void
     {
-        $node = $pages->findPage('foo/bar');
+        $page = $pages->findPage('foo/bar/foo');
 
-        $this->assertInstanceOf(PageNode::class, $node);
-        $this->assertInstanceOf(PageInterface::class, $node->getPage());
-        $this->assertSame('foo/bar', $node->getSlug());
+        $this->assertInstanceOf(PageInterface::class, $page);
+        $this->assertSame('Foo under Bar under Foo', $page->getTitle());
     }
 
     /**
      * @depends testConstructor
      */
-    public function testgetPageNode(PagesManager $pages): void
+    public function testGetNodes(PagesManager $pages): void
     {
-        // Get file
-        $file = $this->locator->getResource('markdown://01.foo/01.bar/dashboard.md');
-        $this->assertInstanceOf(ResourceInterface::class, $file);
+        $expected = [
+            'foo/foo' => [
+                'slug'     => 'foo/foo',
+                'title'    => 'Foo under Foo',
+                'url'      => '/p/foo/foo/',
+                'parent'   => 'foo',
+                'metadata' => [
+                    'title'       => 'Foo under Foo',
+                    'description' => 'The bar page description',
+                ],
+                'children' => [],
+            ],
+            'foo/bar' => [
+                'slug'     => 'foo/bar',
+                'title'    => 'Bar under Foo',
+                'url'      => '/p/foo/bar/',
+                'parent'   => 'foo',
+                'metadata' => [
+                    'title'       => 'Bar under Foo',
+                    'description' => 'The bar page description',
+                ],
+                'children' => [],
+            ],
+            'foo/bar/foo' => [
+                'slug'     => 'foo/bar/foo',
+                'title'    => 'Foo under Bar under Foo',
+                'url'      => '/p/foo/bar/foo/',
+                'parent'   => 'foo/bar',
+                'metadata' => [
+                    'title'       => 'Foo under Bar under Foo',
+                    'description' => 'The bar page description',
+                ],
+                'children' => [],
+            ],
+            'foo' => [
+                'slug'     => 'foo',
+                'title'    => 'Foo page',
+                'url'      => '/p/foo/',
+                'parent'   => '',
+                'metadata' => [
+                    'title'       => 'Foo page',
+                    'description' => 'The foo page description',
+                ],
+                'children' => [],
+            ],
+            'bar' => [
+                'slug'     => 'bar',
+                'title'    => 'Bar page',
+                'url'      => '/p/bar/',
+                'parent'   => '',
+                'metadata' => [
+                    'title'       => 'Bar page',
+                    'description' => 'The bar page description',
+                ],
+                'children' => [],
+            ],
+            'foobar' => [
+                'slug'     => 'foobar',
+                'title'    => 'Foobar page',
+                'url'      => '/p/foobar/',
+                'parent'   => '',
+                'metadata' => [
+                    'title'       => 'Foobar page',
+                    'description' => 'The foo/bar page description',
+                ],
+                'children' => [],
+            ],
+        ];
 
-        // Get node
-        $node = $pages->getPageNode($file);
-        $this->assertInstanceOf(PageNode::class, $node);
+        $result = $pages->getNodes();
 
-        // Assert elements
-        $this->assertInstanceOf(PageInterface::class, $node->getPage());
-        $this->assertSame('foo/bar', $node->getSlug());
-        $this->assertSame('/p/foo/bar/', $node->getUrl()); // Generation is done using the trailing `/`, because the router need to catch both cases
-
-        // Assert parents
-        $parent = $node->getParent();
-        // $this->assertNotNull($parent);
-        $this->assertSame('foo', $parent);
-        //$this->assertInstanceOf(PageNode::class, $parent);
+        $this->assertSame($expected, $result);
     }
 
     /**
      * @depends testConstructor
      */
-    public function testgetTree(PagesManager $pages): void
+    /*public function testTemplateTree(PagesManager $pages): void
     {
-        $list = $pages->getTree();
-        $this->assertInstanceOf(PagesTree::class, $list);
+        $expected = [
+            [
+                'slug'     => 'foo',
+                'title'    => 'Foo page',
+                'url'      => '/p/foo/',
+                'metadata' => [
+                    'title'       => 'Foo page',
+                    'description' => 'The foo page description',
+                ],
+                'children' => [
+                    [
+                        'slug'     => 'foo/foo',
+                        'title'    => 'Foo under Foo',
+                        'url'      => '/p/foo/foo/',
+                        'metadata' => [
+                            'title'       => 'Foo under Foo',
+                            'description' => 'The bar page description',
+                        ],
+                        'children' => [],
+                    ],
+                    [
+                        'slug'     => 'foo/bar',
+                        'title'    => 'Bar under Foo',
+                        'url'      => '/p/foo/bar/',
+                        'metadata' => [
+                            'title'       => 'Bar under Foo',
+                            'description' => 'The bar page description',
+                        ],
+                        'children' => [
+                            [
+                                'slug'     => 'foo/bar/foo',
+                                'title'    => 'Foo under Bar under Foo',
+                                'url'      => '/p/foo/bar/foo/',
+                                'metadata' => [
+                                    'title'       => 'Foo under Bar under Foo',
+                                    'description' => 'The bar page description',
+                                ],
+                                'children' => [],
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+            [
+                'slug'     => 'bar',
+                'title'    => 'Bar page',
+                'url'      => '/p/bar/',
+                'metadata' => [
+                    'title'       => 'Bar page',
+                    'description' => 'The bar page description',
+                ],
+                'children' => [],
+            ],
+            [
+                'slug'     => 'foobar',
+                'title'    => 'Foobar page',
+                'url'      => '/p/foobar/',
+                'metadata' => [
+                    'title'       => 'Foobar page',
+                    'description' => 'The foo/bar page description',
+                ],
+                'children' => [],
+            ],
+        ];
 
-        // Assert countable
-        $this->assertCount(4, $list);
 
-        // Assert to array
-        $array = $list->toArray();
-        $this->assertIsArray($array);
-        $this->assertContainsOnlyInstancesOf(PageNode::class, $array);
+        //$parents = $pages->slugsGetParent($slugs);
 
-        $node = $list->forSlug('foo/bar');
-        $this->assertInstanceOf(PageNode::class, $node);
-        $this->assertSame('foo/bar', $node->getSlug());
+        $files = $pages->getFiles();
+        $nodes = $pages->getNodes($files);
+        $tree = $pages->nodeToTree($nodes, $parents);
 
-        /*$this->assertSame([
-            'Bar under Foo',
-            'Foo page',
-            'Bar page',
-            'Foobar page',
-        ], array_column($array, 'slug'));*/
-
-        /*$this->assertSame([
-            'foo',
-            'foo/bar',
-            'bar',
-            'foobar',
-        ], array_column($list, 'slug'));*/
-    }
-
-    /**
-     *    Test if the manager return the correct thing when given a full path.
-     */
-    /*public function testMarkdownPagesManager_getPage()
-    {
-        $page = $this->manager->getPage($this->testPage);
-        $this->assertInstanceOf(Page::class, $page);
-
-        // When dealing with a non existing page, an exception should occur
-        $this->expectException(FileNotFoundException::class);
-        $page = $this->manager->getPage('undefined.md');
-
-        // When dealing with a non markdown file, an exception should occur
-        $this->expectException(InvalidArgumentException::class);
-        $page = $this->manager->getPage('test.txt');
+        $this->assertEquals($expected, $tree);
     }*/
 }

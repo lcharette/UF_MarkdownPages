@@ -12,7 +12,6 @@
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
 use UserFrosting\Sprinkle\Core\Router;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
@@ -72,13 +71,137 @@ class PagesManager
     }
 
     /**
-     * Get a list of all the files found across all active sprinkles
+     * Finds a file in the available list by searching for a specific slug.
      *
-     * @return ResourceInterface[] An array of absolute paths
+     * @param string $slug The page slug, aka the part of url after the base `pages/` path
+     *
+     * @throws FileNotFoundException If page is not found
+     *
+     * @return ResourceInterface The file resource
+     */
+    public function findFile(string $slug): ResourceInterface
+    {
+        // Get all pages
+        $files = $this->getFiles();
+
+        // Find the page we want. Make sure we get a result,
+        // otherwise file is not found
+        if (!isset($files[$slug])) {
+            throw new FileNotFoundException();
+        }
+
+        return $files[$slug];
+    }
+
+    /**
+     * Finds a page in the available list by searching for a specific slug.
+     *
+     * @param string $slug The page slug, aka the part of url after the base `pages/` path
+     *
+     * @throws FileNotFoundException If page is not found
+     *
+     * @return PageInterface The page instance
+     */
+    public function findPage(string $slug): PageInterface
+    {
+        $file = $this->findFile($slug);
+
+        return $this->getPage($file);
+    }
+
+    /**
+     * Convert a list of resources associated to their slugs.
+     *
+     * @return array<string,ResourceInterface> as [Slug => Resource]
      */
     public function getFiles(): array
     {
+        $result = [];
+        $files = $this->fetchFilesList();
+
+        foreach ($files as $file) {
+            $slug = $this->pathToSlug($file->getBasePath());
+            $result[$slug] = $file;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return mixed[]
+     */
+    public function getNodes(): array
+    {
+        $result = [];
+
+        foreach ($this->getFiles() as $slug => $file) {
+
+            // Get page
+            $page = $this->getPage($file);
+
+            $result[$slug] = [
+                'slug'     => $slug,
+                'title'    => $page->getTitle(),
+                'url'      => $this->router->pathFor('markdownPages', ['path' => $slug]),
+                'parent'   => $this->getParentSlug($slug),
+                'metadata' => $page->getMetadata(),
+                'children' => [],
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param mixed[]              $nodes
+     * @param array<string,string> $parents as [Slug => parent]
+     *
+     * @return mixed[]
+     */
+    public function nodeToTree(array $nodes, array $parents): array
+    {
+        $rootNode = [];
+
+        foreach ($parents as $child => $parent) {
+            $childNode = $nodes[$child];
+
+            if (key_exists($parent, $nodes)) {
+                $nodes[$parent]['children'][] = $childNode;
+            } else {
+                $rootNode[] = $childNode;
+            }
+        }
+
+        return $rootNode;
+    }
+
+    /**
+     * Get a list of all the resources found across all active sprinkles.
+     *
+     * @return ResourceInterface[]
+     */
+    protected function fetchFilesList(): array
+    {
         return $this->locator->listResources($this->scheme);
+    }
+
+    /**
+     * Return the parent of a given page slug.
+     *
+     * @param string $slug The slug
+     *
+     * @return string The slug parent slug
+     */
+    protected function getParentSlug(string $slug): string
+    {
+        $fragments = explode('/', $slug);
+        array_pop($fragments);
+
+        return implode('/', $fragments);
     }
 
     /**
@@ -88,186 +211,9 @@ class PagesManager
      *
      * @return MarkdownFile The page instance
      */
-    public function getPage(string $path): MarkdownFile
+    protected function getPage(string $path): MarkdownFile
     {
         return new MarkdownFile($path, $this->parser, $this->filesystem);
-    }
-
-    /**
-     * Finds a page in the available list by searching for the reltive path
-     * after `pages/`.
-     *
-     * @param string $slug The page slug, aka the part of url after the base `pages/` path
-     *
-     * @throws FileNotFoundException If page is not found
-     *
-     * @return PageNode The page instance
-     */
-    public function findPage(string $slug): PageNode
-    {
-        // Get all pages
-        $pages = $this->getTree();
-        $page = $pages->forSlug($slug);
-
-        // Find the page we want. Make sure we get a result,
-        // otherwise file is not found
-        if (is_null($page)) {
-            throw new FileNotFoundException();
-        }
-
-        return $page;
-    }
-
-    /**
-     * Get a list of all the pages found across all active sprinkles.
-     * Returns a collection of MarkdownPage to which are added some custom
-     * public property, such as the relative path and the page url.
-     * TODO : Cache the result.
-     *
-     * @return PagesTree
-     */
-    public function getTree(): PagesTree
-    {
-        $files = $this->getFiles();
-
-        $collection = new PagesTree();
-
-        foreach ($files as $file) {
-            $page = $this->getPageNode($file);
-            $collection->add($page);
-        }
-
-        return $collection;
-    }
-
-    public function getPageNode(ResourceInterface $file): PageNode
-    {
-        // Get the page instance
-        $markdown = $this->getPage($file->getAbsolutePath());
-
-        // Add the slug
-        $slug = $this->pathToSlug($file->getBasePath());
-
-        $page = new PageNode($markdown, $slug);
-
-        // Add the url
-        $url = $this->router->pathFor('markdownPages', ['path' => $slug]);
-        $page->setUrl($url);
-
-        // To help with the tree generation, we'll add the parent slug here
-        $parent = $this->getParentSlug($slug);
-        $page->setParent($parent);
-
-        return $page;
-    }
-
-    /**
-     * Function that return the complete page tree used to create a menu.
-     *
-     * @param string $topLevel The top level slug (default '');
-     *
-     * @return Collection
-     */
-    /*public function getTree($topLevel = '')
-    {
-        // Get all pages
-        $pages = $this->getTree();
-
-        //Sort the collection
-        $pages = $pages->sortBy('relativePath');
-
-        // We start by top most pages (the one without parent) and go down from here
-        return $this->getPagesChildren($pages, $topLevel);
-    }*/
-
-    /**
-     * Set breadcrumbs recursively for the specified page and it's parent.
-     *
-     * @param PageInterface $page
-     */
-    /*public function setBreadcrumbs(PageInterface $page)
-    {
-        // Add it to the breadcrumb
-        $this->ci->breadcrumb->prepend($page->getTitle(), $page->url);
-
-        // If the page doesn't have a parent, stop here
-        if ($page->parent == '') {
-            return;
-        }
-
-        // Find the parent instance
-        $parent = $this->findPage($page->parent);
-
-        // Add the parent's parent
-        $this->setBreadcrumbs($parent);
-    }*/
-
-    /**
-     * Set the value of scheme
-     *
-     * @param string $scheme
-     *
-     * @return self
-     */
-    public function setScheme(string $scheme)
-    {
-        $this->scheme = $scheme;
-
-        return $this;
-    }
-
-    /**
-     * @return Parsedown
-     */
-    public function getParser(): Parsedown
-    {
-        return $this->parser;
-    }
-
-    /**
-     * Function that recursively find children for a given parent slug.
-     *
-     * @param Collection $pages      A collection of pages
-     * @param string     $parentSlug The parent slug
-     *
-     * @return Collection The tree of children for that given slug
-     */
-    protected function getPagesChildren($pages, $parentSlug)
-    {
-        // Regroups pages by parents
-        $parents = $pages->groupBy('parent');
-
-        // Get children for said parent. If none are found, we'll use an empty collection
-        $children = $parents->get($parentSlug, function () {
-            return collect([]);
-        });
-
-        // Loop all pages with said parent to recursively add them to the children's children
-        foreach ($pages->where('parent', $parentSlug) as $child_page) {
-            $child_page->children = $this->getPagesChildren($pages, $child_page->slug);
-        }
-
-        // Return the children, with the top level slug as a key
-        return $children->keyBy(function ($page) {
-            $parts = explode('/', $page->slug);
-
-            return array_pop($parts);
-        });
-    }
-
-    /**
-     * Return the parent of a given page slug.
-     *
-     * @param string $slug The item slug
-     *
-     * @return string The item parent slug
-     */
-    protected function getParentSlug($slug)
-    {
-        $fragments = explode('/', $slug);
-        array_pop($fragments);
-
-        return implode('/', $fragments);
     }
 
     /**
@@ -296,5 +242,27 @@ class PagesManager
 
         // Glue the fragments back together
         return implode('/', $dirFragments);
+    }
+
+    /**
+     * Set the value of scheme
+     *
+     * @param string $scheme
+     *
+     * @return self
+     */
+    public function setScheme(string $scheme)
+    {
+        $this->scheme = $scheme;
+
+        return $this;
+    }
+
+    /**
+     * @return Parsedown
+     */
+    public function getParser(): Parsedown
+    {
+        return $this->parser;
     }
 }
