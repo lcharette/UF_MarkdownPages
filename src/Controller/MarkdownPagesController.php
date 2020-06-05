@@ -40,16 +40,15 @@ class MarkdownPagesController extends SimpleController
         /** @var \UserFrosting\Sprinkle\Core\Router */
         $router = $this->ci->router;
 
-        // Create manager instance
+        /** @var PagesManager */
         $manager = $this->ci->markdownPages;
 
         // Get the file instance. A file not found exception will be thrown
         // if the page doesn't exist
         $page = $manager->findPage($args['path']);
-        $file = $page->getPage();
 
         // Get the file metadata
-        $metadata = $file->getMetadata();
+        $metadata = $page->getMetadata();
 
         // If file has a redirect metadata, perform the redirect
         if (isset($metadata['redirect'])) {
@@ -77,11 +76,11 @@ class MarkdownPagesController extends SimpleController
         // $manager->setBreadcrumbs($file);
 
         // We'll try to find the right template
-        $template = $file->getTemplate();
+        $template = $page->getTemplate();
 
         // Render the page
         return $this->ci->view->render($response, "markdownPages/$template.html.twig", [
-            'content'    => $file->getContent(),
+            'content'    => $page->getContent(),
             'metadata'   => $metadata,
         ]);
     }

@@ -20,7 +20,7 @@ use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
 
 /**
- *    Tests for MarkdownPages class.
+ * Tests for MarkdownPages class.
  */
 class PagesManagerTest extends TestCase
 {
