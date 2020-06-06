@@ -125,7 +125,7 @@ class Parsedown extends MetaParsedown
     }
 
     /**
-     * For extending this class via plugins
+     * For extending this class via plugins.
      *
      * @param string  $method
      * @param mixed[] $args

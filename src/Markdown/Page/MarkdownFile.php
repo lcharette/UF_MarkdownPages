@@ -72,7 +72,7 @@ class MarkdownFile implements PageInterface
 
     /**
      * Load the file content.
-     * The content of the file will be loaded into `$this->rawContent`
+     * The content of the file will be loaded into `$this->rawContent`.
      *
      * @throws FileNotFoundException    if file is not found;
      * @throws InvalidArgumentException if file is not plain/text or .md

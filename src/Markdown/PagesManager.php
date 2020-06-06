@@ -21,7 +21,7 @@ use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
- * PagesManager
+ * PagesManager.
  */
 class PagesManager
 {
@@ -128,7 +128,7 @@ class PagesManager
     }
 
     /**
-     * Undocumented function
+     * Undocumented function.
      *
      * @return mixed[]
      */
@@ -155,7 +155,7 @@ class PagesManager
     }
 
     /**
-     * Undocumented function
+     * Undocumented function.
      *
      * @param string|null $start
      *
@@ -169,7 +169,7 @@ class PagesManager
     }
 
     /**
-     * Undocumented function
+     * Undocumented function.
      *
      * @param mixed[]     $nodes
      * @param string|null $parentSlug
@@ -190,7 +190,7 @@ class PagesManager
     }
 
     /**
-     * Undocumented function
+     * Undocumented function.
      *
      * @param mixed[]     $nodes
      * @param string|null $request
@@ -276,7 +276,7 @@ class PagesManager
     }
 
     /**
-     * Set the value of scheme
+     * Set the value of scheme.
      *
      * @param string $scheme
      *

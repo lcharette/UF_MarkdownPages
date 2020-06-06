@@ -11,8 +11,8 @@
 
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Elements;
 
-use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Sprinkle\Core\Facades\Translator;
+use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 
 /**
  * MarkdownNotices class.
