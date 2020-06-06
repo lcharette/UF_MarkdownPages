@@ -55,7 +55,7 @@ class ServicesProvider
          */
         $container->extend('view', function ($view, $c) {
             $twig = $view->getEnvironment();
-            $extension = new MarkdownPagesTwigExtension($c);
+            $extension = new MarkdownPagesTwigExtension($c->markdownPages);
             $twig->addExtension($extension);
 
             return $view;

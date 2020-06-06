@@ -157,26 +157,57 @@ class PagesManager
     /**
      * Undocumented function
      *
-     * @param mixed[]              $nodes
-     * @param array<string,string> $parents as [Slug => parent]
+     * @param string|null $start
      *
      * @return mixed[]
      */
-    public function nodeToTree(array $nodes, array $parents): array
+    public function getTree(?string $start = null): array
     {
-        $rootNode = [];
+        $nodes = $this->getNodes();
 
-        foreach ($parents as $child => $parent) {
-            $childNode = $nodes[$child];
+        return $this->getChildrenForParentSlug($nodes, $start);
+    }
 
-            if (key_exists($parent, $nodes)) {
-                $nodes[$parent]['children'][] = $childNode;
-            } else {
-                $rootNode[] = $childNode;
+    /**
+     * Undocumented function
+     *
+     * @param mixed[]     $nodes
+     * @param string|null $parentSlug
+     *
+     * @return mixed[]
+     */
+    protected function getChildrenForParentSlug(array $nodes, ?string $parentSlug)
+    {
+        // Get children of passed parents
+        $children = $this->getNodesForParent($nodes, $parentSlug);
+
+        // Loop all pages with said parent to recursively add them to the children's children
+        foreach ($children as $slug => $node) {
+            $children[$slug]['children'] = $this->getChildrenForParentSlug($nodes, $slug);
+        }
+
+        return $children;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param mixed[]     $nodes
+     * @param string|null $request
+     *
+     * @return mixed[]
+     */
+    protected function getNodesForParent(array $nodes, ?string $request)
+    {
+        $result = [];
+
+        foreach ($nodes as $slug => $node) {
+            if ($node['parent'] == $request) {
+                $result[$slug] = $node;
             }
         }
 
-        return $rootNode;
+        return $result;
     }
 
     /**

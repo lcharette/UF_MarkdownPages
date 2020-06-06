@@ -11,29 +11,29 @@
 
 namespace UserFrosting\Sprinkle\MarkdownPages\Twig;
 
-use Psr\Container\ContainerInterface;
 use Twig\Extension\AbstractExtension;
+use Twig\Extension\GlobalsInterface;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesManager;
 
 /**
  * MarkdownPagesTwigExtension class.
  * Extends Twig functionality for the MarkdownPages sprinkle.
  */
-class MarkdownPagesTwigExtension extends AbstractExtension
+class MarkdownPagesTwigExtension extends AbstractExtension implements GlobalsInterface
 {
     /**
-     * @var ContainerInterface The global container object, which holds all your services.
+     * @var PagesManager
      */
-    protected $ci;
+    protected $manager;
 
     /**
      * Constructor.
      *
-     * @param ContainerInterface $ci The global container object, which holds all your services.
+     * @param PagesManager $manager
      */
-    public function __construct(ContainerInterface $ci)
+    public function __construct(PagesManager $manager)
     {
-        $this->ci = $ci;
+        $this->manager = $manager;
     }
 
     /**
@@ -43,11 +43,10 @@ class MarkdownPagesTwigExtension extends AbstractExtension
      */
     public function getGlobals()
     {
-        // Create manager instance
-        $manager = new PagesManager($this->ci);
+        $tree = $this->manager->getTree();
 
         return [
-            'markdownPagesTree' => $manager->getTree(),
+            'markdownPagesTree' => $tree,
         ];
     }
 }

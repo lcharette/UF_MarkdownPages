@@ -176,65 +176,71 @@ class PagesManagerTest extends TestCase
     /**
      * @depends testConstructor
      */
-    /*public function testTemplateTree(PagesManager $pages): void
+    public function testTemplateTree(PagesManager $pages): void
     {
         $expected = [
-            [
+            'foo' => [
                 'slug'     => 'foo',
                 'title'    => 'Foo page',
                 'url'      => '/p/foo/',
+                'parent'   => '',
                 'metadata' => [
                     'title'       => 'Foo page',
                     'description' => 'The foo page description',
                 ],
                 'children' => [
-                    [
+                    'foo/foo' => [
                         'slug'     => 'foo/foo',
                         'title'    => 'Foo under Foo',
                         'url'      => '/p/foo/foo/',
+                        'parent'   => 'foo',
                         'metadata' => [
                             'title'       => 'Foo under Foo',
                             'description' => 'The bar page description',
                         ],
                         'children' => [],
                     ],
-                    [
+                    'foo/bar' => [
                         'slug'     => 'foo/bar',
                         'title'    => 'Bar under Foo',
                         'url'      => '/p/foo/bar/',
+                        'parent'   => 'foo',
                         'metadata' => [
                             'title'       => 'Bar under Foo',
                             'description' => 'The bar page description',
                         ],
                         'children' => [
-                            [
+                            'foo/bar/foo' => [
                                 'slug'     => 'foo/bar/foo',
                                 'title'    => 'Foo under Bar under Foo',
                                 'url'      => '/p/foo/bar/foo/',
+                                'parent'   => 'foo/bar',
                                 'metadata' => [
                                     'title'       => 'Foo under Bar under Foo',
                                     'description' => 'The bar page description',
                                 ],
                                 'children' => [],
-                            ]
+                            ],
                         ],
-                    ]
+                    ],
                 ],
             ],
-            [
+            'bar' => [
                 'slug'     => 'bar',
                 'title'    => 'Bar page',
                 'url'      => '/p/bar/',
+                'parent'   => '',
                 'metadata' => [
                     'title'       => 'Bar page',
                     'description' => 'The bar page description',
                 ],
                 'children' => [],
             ],
-            [
+            'foobar' => [
                 'slug'     => 'foobar',
                 'title'    => 'Foobar page',
                 'url'      => '/p/foobar/',
+                'parent'   => '',
                 'metadata' => [
                     'title'       => 'Foobar page',
                     'description' => 'The foo/bar page description',
@@ -243,13 +249,7 @@ class PagesManagerTest extends TestCase
             ],
         ];
 
-
-        //$parents = $pages->slugsGetParent($slugs);
-
-        $files = $pages->getFiles();
-        $nodes = $pages->getNodes($files);
-        $tree = $pages->nodeToTree($nodes, $parents);
-
+        $tree = $pages->getTree();
         $this->assertEquals($expected, $tree);
-    }*/
+    }
 }
