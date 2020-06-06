@@ -276,6 +276,16 @@ class PagesManager
     }
 
     /**
+     * Get the locator scheme for the files.
+     *
+     * @return string
+     */
+    public function getScheme(): string
+    {
+        return $this->scheme;
+    }
+
+    /**
      * Set the value of scheme.
      *
      * @param string $scheme

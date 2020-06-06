@@ -15,6 +15,7 @@ use Illuminate\Filesystem\Filesystem;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesManager;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
+use UserFrosting\Support\Exception\FileNotFoundException;
 use UserFrosting\Tests\TestCase;
 use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocator;
@@ -46,11 +47,6 @@ class PagesManagerTest extends TestCase
         $this->assertSame($parser, $pages->getParser());
 
         return $pages;
-    }
-
-    public function testServcice(): void
-    {
-        $this->assertInstanceOf(PagesManager::class, $this->ci->markdownPages);
     }
 
     /**
@@ -86,12 +82,30 @@ class PagesManagerTest extends TestCase
     /**
      * @depends testConstructor
      */
+    public function testfindFileForNotFound(PagesManager $pages): void
+    {
+        $this->expectException(FileNotFoundException::class);
+        $file = $pages->findFile('blah');
+    }
+
+    /**
+     * @depends testConstructor
+     */
     public function testfindPage(PagesManager $pages): void
     {
         $page = $pages->findPage('foo/bar/foo');
 
         $this->assertInstanceOf(PageInterface::class, $page);
         $this->assertSame('Foo under Bar under Foo', $page->getTitle());
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testfindPageForNotFound(PagesManager $pages): void
+    {
+        $this->expectException(FileNotFoundException::class);
+        $file = $pages->findFile('blah');
     }
 
     /**
@@ -251,5 +265,15 @@ class PagesManagerTest extends TestCase
 
         $tree = $pages->getTree();
         $this->assertEquals($expected, $tree);
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testSetScheme(PagesManager $pages): void
+    {
+        $this->assertSame('markdown://', $pages->getScheme());
+        $pages->setScheme('foo://');
+        $this->assertSame('foo://', $pages->getScheme());
     }
 }
