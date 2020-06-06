@@ -11,15 +11,19 @@
 
 namespace UserFrosting\Sprinkle\MarkdownPages\Tests\Integration;
 
+use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\PagesManager;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Parser\Parsedown;
 use UserFrosting\Tests\TestCase;
 
 /**
- * Tests for MarkdownPages class.
+ * Tests for Services Providers.
  */
 class ServicesProviderTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     public function testmarkdownPagesServcice(): void
     {
         $this->assertInstanceOf(PagesManager::class, $this->ci->markdownPages);
@@ -30,10 +34,12 @@ class ServicesProviderTest extends TestCase
         $this->assertInstanceOf(Parsedown::class, $this->ci->markdownParser);
     }
 
-    /*public function testViewServcice(): void
+    public function testViewServcice(): void
     {
-        $this->ci->markdownPages;
+        $manager = Mockery::mock(PagesManager::class);
+        $manager->shouldReceive('getTree')->with()->once()->andReturn([]);
+        $this->ci->markdownPages = $manager;
 
-        //$this->assertInstanceOf(PagesManager::class, $this->ci->markdownPages);
-    }*/
+        $this->ci->view->fetch('navigation/markdownPages.html.twig');
+    }
 }
