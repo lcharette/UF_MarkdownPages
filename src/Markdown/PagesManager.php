@@ -12,6 +12,7 @@
 namespace UserFrosting\Sprinkle\MarkdownPages\Markdown;
 
 use Illuminate\Filesystem\Filesystem;
+use UserFrosting\Sprinkle\Breadcrumb\Breadcrumb\Manager;
 use UserFrosting\Sprinkle\Core\Router;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\MarkdownFile;
 use UserFrosting\Sprinkle\MarkdownPages\Markdown\Page\PageInterface;
@@ -21,7 +22,7 @@ use UserFrosting\UniformResourceLocator\ResourceInterface;
 use UserFrosting\UniformResourceLocator\ResourceLocatorInterface;
 
 /**
- * PagesManager.
+ * Pages manager.
  */
 class PagesManager
 {
@@ -51,8 +52,6 @@ class PagesManager
     protected $filesystem;
 
     /**
-     * Class constructor.
-     *
      * @param ResourceLocatorInterface $locator
      * @param Parsedown                $parser
      * @param Filesystem|null          $filesystem
@@ -128,7 +127,8 @@ class PagesManager
     }
 
     /**
-     * Undocumented function.
+     * Return all nodes representing all available files, untreed.
+     * @todo Using a custom object would be better here compared to the associative array.
      *
      * @return mixed[]
      */
@@ -155,7 +155,27 @@ class PagesManager
     }
 
     /**
-     * Undocumented function.
+     * Return the node for a specific slug.
+     *
+     * @param  string     $slug
+     * @throws \Exception if Slug is not found. // TODO
+     *
+     * @return mixed[]
+     */
+    public function getNodeForSlug(string $slug): array
+    {
+        $nodes = $this->getNodes();
+
+        if (!isset($nodes[$slug])) {
+            throw new \Exception(); // TODO Change to custom exception
+        }
+
+        return $nodes[$slug];
+    }
+
+    /**
+     * Retrun the whole tree formatted for display in the sidebar menu.
+     * The `$start` argument can be used to select the root node to display.
      *
      * @param string|null $start
      *
@@ -169,10 +189,35 @@ class PagesManager
     }
 
     /**
-     * Undocumented function.
+     * Add the specified slug page and it's parent to the breadcrumb trail.
+     * @todo Assuming this can be used with any file, the exception in `getNodeForSlug` should probably be catched
+     *       and suppressed so to fail silently.
      *
-     * @param mixed[]     $nodes
-     * @param string|null $parentSlug
+     * @param  Manager    $breadcrumb The breadcrumb manager
+     * @param  string     $slug
+     * @throws \Exception If slug is not found // TODO
+     */
+    public function setBreadcrumbs(Manager $breadcrumb, string $slug): void
+    {
+        $node = $this->getNodeForSlug($slug);
+
+        // Add it to the breadcrumb
+        $breadcrumb->prepend($node['title'], $node['url']);
+
+        // If the page doesn't have a parent, stop here
+        if ($node['parent'] == '') {
+            return;
+        }
+
+        // Add the parent's breadcrumbs
+        $this->setBreadcrumbs($breadcrumb, $node['parent']);
+    }
+
+    /**
+     * Return all the children for the selected node, recursively.
+     *
+     * @param mixed[]     $nodes      List of all nodes, untreed.
+     * @param string|null $parentSlug The root node can be selected using a null value.
      *
      * @return mixed[]
      */
@@ -190,10 +235,10 @@ class PagesManager
     }
 
     /**
-     * Undocumented function.
+     * Return all nodes from the passed list which have `$parent` as parent.
      *
      * @param mixed[]     $nodes
-     * @param string|null $request
+     * @param string|null $request The root node can be selected using a null value.
      *
      * @return mixed[]
      */

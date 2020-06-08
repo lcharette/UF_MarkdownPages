@@ -43,6 +43,11 @@ class MarkdownPagesController extends SimpleController
         /** @var PagesManager */
         $manager = $this->ci->markdownPages;
 
+        // TODO : All the code below needs to be moved to the manager, so the controller get slimmer.
+        //        The Whole page rendering should probably be left outside the page scope if possible, or at least
+        //        part of it if we want to reuse a standalone file as a page later.
+        //        Otherwise, it could be the pageManager and "single file manager" be two different things implementing the same interface.
+
         // Get the file instance. A file not found exception will be thrown
         // if the page doesn't exist
         $page = $manager->findPage($args['path']);
@@ -73,7 +78,7 @@ class MarkdownPagesController extends SimpleController
         }
 
         // We also need to find and set the breadcrumbs
-        // $manager->setBreadcrumbs($file);
+        $manager->setBreadcrumbs($this->ci->breadcrumb, $args['path']);
 
         // We'll try to find the right template
         $template = $page->getTemplate();
