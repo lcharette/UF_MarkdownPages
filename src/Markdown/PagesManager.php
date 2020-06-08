@@ -128,6 +128,7 @@ class PagesManager
 
     /**
      * Return all nodes representing all available files, untreed.
+     *
      * @todo Using a custom object would be better here compared to the associative array.
      *
      * @return mixed[]
@@ -157,7 +158,8 @@ class PagesManager
     /**
      * Return the node for a specific slug.
      *
-     * @param  string     $slug
+     * @param string $slug
+     *
      * @throws \Exception if Slug is not found. // TODO
      *
      * @return mixed[]
@@ -190,11 +192,13 @@ class PagesManager
 
     /**
      * Add the specified slug page and it's parent to the breadcrumb trail.
+     *
      * @todo Assuming this can be used with any file, the exception in `getNodeForSlug` should probably be catched
      *       and suppressed so to fail silently.
      *
-     * @param  Manager    $breadcrumb The breadcrumb manager
-     * @param  string     $slug
+     * @param Manager $breadcrumb The breadcrumb manager
+     * @param string  $slug
+     *
      * @throws \Exception If slug is not found // TODO
      */
     public function setBreadcrumbs(Manager $breadcrumb, string $slug): void
