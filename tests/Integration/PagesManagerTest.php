@@ -190,6 +190,37 @@ class PagesManagerTest extends TestCase
     /**
      * @depends testConstructor
      */
+    public function testgetNodeForSlug(PagesManager $pages): void
+    {
+        $expected = [
+            'slug'     => 'foo/foo',
+            'title'    => 'Foo under Foo',
+            'url'      => '/p/foo/foo/',
+            'parent'   => 'foo',
+            'metadata' => [
+                'title'       => 'Foo under Foo',
+                'description' => 'The bar page description',
+            ],
+            'children' => [],
+        ];
+
+        $result = $pages->getNodeForSlug('foo/foo');
+
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * @depends testConstructor
+     */
+    public function testgetNodeForSlugForNotFound(PagesManager $pages): void
+    {
+        $this->expectException(\Exception::class);
+        $pages->getNodeForSlug('blah');
+    }
+
+    /**
+     * @depends testConstructor
+     */
     public function testTemplateTree(PagesManager $pages): void
     {
         $expected = [
