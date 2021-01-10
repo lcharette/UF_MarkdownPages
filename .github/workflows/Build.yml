@@ -49,7 +49,7 @@ jobs:
           mv ./UserFrosting ./UF_MarkdownPages
 
       - name: Setup Sprinkles 
-        run: echo "{\"base\":[\"core\",\"account\",\"admin\",\"Breadcrumbs\",\"MarkdownPages\"]}" > ./app/sprinkles.json
+        run: echo "{\"base\":[\"core\",\"account\",\"admin\",\"Breadcrumb\",\"MarkdownPages\"]}" > ./app/sprinkles.json
       
       - name: Install Dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
