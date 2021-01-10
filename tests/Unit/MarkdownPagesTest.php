@@ -1,10 +1,10 @@
 <?php
 
 /*
- * UF MarkdownPages Sprinkle
+ * UserFrosting MarkdownPages Sprinkle
  *
  * @author    Louis Charette
- * @copyright Copyright (c) 2018 Louis Charette
+ * @copyright Copyright (c) 2020 Louis Charette
  * @link      https://github.com/lcharette/UF_MarkdownPages
  * @license   https://github.com/lcharette/UF_MarkdownPages/blob/master/LICENSE.md (MIT License)
  */
@@ -151,7 +151,7 @@ class MarkdownPagesTest extends TestCase
                     function ($param) {
                         return new FakePageStub();
                     }
-               ));
+                ));
 
         // We test the fake list is returned correctly
         $files = $manager->getFiles();
