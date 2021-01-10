@@ -44,7 +44,7 @@ class MarkdownPagesTest extends TestCase
     /**
      *    {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // Setup parent first to get access to the container
         parent::setUp();
@@ -59,8 +59,10 @@ class MarkdownPagesTest extends TestCase
     /**
      *    {@inheritdoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
+        parent::tearDown();
+        
         m::close();
     }
 
