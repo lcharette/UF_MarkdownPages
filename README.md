@@ -11,8 +11,8 @@ Simple flat-file page manager for UserFrosting 4. Drop any markdown file in your
 
 | Branch | Status |
 | ------ | ------ |
-| master | [![Build Status](https://travis-ci.org/lcharette/UF_MarkdownPages.svg?branch=master)](https://travis-ci.org/lcharette/UF_MarkdownPages)  [![StyleCI](https://styleci.io/repos/121700467/shield?branch=master&style=flat)](https://styleci.io/repos/121700467)  [![codecov](https://codecov.io/gh/lcharette/UF_MarkdownPages/branch/master/graph/badge.svg)](https://codecov.io/gh/lcharette/UF_MarkdownPages)
-| develop | [![Build Status](https://travis-ci.org/lcharette/UF_MarkdownPages.svg?branch=develop)](https://travis-ci.org/lcharette/UF_MarkdownPages)  [![StyleCI](https://styleci.io/repos/121700467/shield?branch=develop&style=flat)](https://styleci.io/repos/121700467) [![codecov](https://codecov.io/gh/lcharette/UF_MarkdownPages/branch/develop/graph/badge.svg)](https://codecov.io/gh/lcharette/UF_MarkdownPages)
+| master | [![Build Status](https://github.com/lcharette/UF_MarkdownPages/workflows/Build/badge.svg?branch=master)](https://github.com/lcharette/UF_MarkdownPages/actions?query=workflow%3ABuild)  [![StyleCI](https://styleci.io/repos/121700467/shield?branch=master&style=flat)](https://styleci.io/repos/121700467)  [![codecov](https://codecov.io/gh/lcharette/UF_MarkdownPages/branch/master/graph/badge.svg)](https://codecov.io/gh/lcharette/UF_MarkdownPages)
+| develop | [![Build Status](https://github.com/lcharette/UF_MarkdownPages/workflows/Build/badge.svg?branch=master)](https://github.com/lcharette/UF_MarkdownPages/actions?query=workflow%3ABuild)  [![StyleCI](https://styleci.io/repos/121700467/shield?branch=develop&style=flat)](https://styleci.io/repos/121700467) [![codecov](https://codecov.io/gh/lcharette/UF_MarkdownPages/branch/develop/graph/badge.svg)](https://codecov.io/gh/lcharette/UF_MarkdownPages)
 
 # Help and Contributing
 
