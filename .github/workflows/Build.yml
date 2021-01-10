@@ -18,7 +18,7 @@ jobs:
           uf_versions: ['4.3.*', '4.4.*']
 
       runs-on: ubuntu-latest
-      name: PHPUnit - PHP ${{ matrix.php_versions }} - UF ${{ matrix.uf_versions }} - FormGenerator ${{ matrix.fg_version }}
+      name: PHPUnit - PHP ${{ matrix.php_versions }} - UF ${{ matrix.uf_versions }}
 
       # env:
       #   TEST_DB: default
@@ -49,7 +49,7 @@ jobs:
           mv ./UserFrosting ./UF_MarkdownPages
 
       - name: Setup Sprinkles 
-        run: echo "{\"base\":[\"core\",\"account\",\"admin\",\"FormGenerator\",\"Breadcrumbs\",\"MarkdownPages\"]}" > ./app/sprinkles.json
+        run: echo "{\"base\":[\"core\",\"account\",\"admin\",\"Breadcrumbs\",\"MarkdownPages\"]}" > ./app/sprinkles.json
       
       - name: Install Dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
