@@ -7,6 +7,9 @@
 
 Simple flat-file page manager for UserFrosting 4. Drop any markdown file in your sprinkle and access them directly inside your UserFrosting installation. Support custom templates and sprinkle priority. It's just like a mini [Grav](https://getgrav.org) site, directly inside UserFrosting.
 
+> [!CAUTION]
+> This project has been archived. The features provided by this project are now built-in **UserFrosting 6**.
+
 **This sprinkles requires UserFrosting 4.1 or newer**
 
 | Branch | Status |
